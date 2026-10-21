@@ -103,6 +103,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
 .ha{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .unsaved-banner{display:none;align-items:center;gap:10px;background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:12px;padding:.65rem 1rem;margin-bottom:1.5rem;font-size:15px;color:var(--amber-t);font-weight:600}
 .unsaved-banner.show{display:flex}
+/* Private registry: hide everything that shows or changes skills until the viewer is approved */
+body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,body.locked .expbar{display:none}
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:2rem}
 .sc{background:var(--surf1);border:1px solid var(--bdr);border-radius:16px;padding:1rem 1.1rem;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;position:relative;overflow:hidden}
 [data-theme="dark"] .sc{background:var(--card-bg)}
@@ -258,7 +260,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
     <div class="dir-btn" id="roleBtn" onclick="roleAction()" style="display:none"><span id="roleBtnText"></span></div>
     <div class="dir-btn" id="dirStatus" onclick="pickDirectory()" title="Link a folder — files auto-write on every change">📁 <span id="dirStatusText">Link folder for auto-save</span></div>
   </div>
-  <div class="sb-section">
+  <div class="sb-section needs-access">
     <div class="sb-label">Levels</div>
     <button class="nb active" id="nav-all" onclick="nf('all',this)"><span class="ndot" style="background:#64748b"></span>All skills<span class="nc" id="nc-all">0</span></button>
     <button class="nb" id="nav-resource" onclick="nf('resource',this)"><span class="ndot" style="background:#10b981"></span>L0 · Resources<span class="nc" id="nc-resource">0</span></button>
@@ -267,7 +269,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
     <button class="nb" id="nav-composite" onclick="nf('composite',this)"><span class="ndot" style="background:#f59e0b"></span>L3 · Composite<span class="nc" id="nc-composite">0</span></button>
     <button class="nb" id="nav-task" onclick="nf('task',this)"><span class="ndot" style="background:#ef4444"></span>L4 · Task Plans<span class="nc" id="nc-task">0</span></button>
   </div>
-  <div class="sb-section">
+  <div class="sb-section needs-access">
     <div class="sb-label">Actions</div>
     <button class="nb" onclick="openAdd()">＋ &nbsp;Add skill</button>
     <button class="nb" onclick="triggerImport()">↑ &nbsp;Import YAML / JSON</button>
@@ -487,6 +489,7 @@ const DEFAULT_SKILLS=[
 
 /* ── State ── */
 let skills=[],curF='all',curS='',editId=null,pendingDelId=null,dirHandle=null,loaded=false,skillMeta={};
+let access;/* undefined until sign-in state is known, then null (signed out) or a role: checking/viewer/pending/editor/admin */
 
 /* ── Shared cloud registry (Firestore glue lives in the module script at the bottom, exposed as window.FB) ── */
 /* Called by FB on every live snapshot: arr is the ordered skill list, meta maps id → {by, at} */
@@ -497,6 +500,8 @@ function setSkills(arr,meta){
   skills.forEach(s=>{if(!s.section&&defMap[s.id]&&defMap[s.id].section)s.section=defMap[s.id].section});
   render();autoWriteFiles();
 }
+/* Called by FB when access is lost (signed out / removed) — clears the data without touching a linked folder */
+function clearSkills(){skills=[];skillMeta={};loaded=false;render()}
 function showBanner(msg){const b=document.getElementById('unsavedBanner');b.textContent=msg;b.classList.toggle('show',!!msg)}
 function editedLine(id){
   const m=skillMeta[id];if(!m||!m.by)return'';
@@ -531,6 +536,7 @@ const ROLE_UI={
   editor:['✏ You have edit access',true],
 };
 function setRoleUI(role){
+  if(access!==role){access=role;render()}
   const btn=document.getElementById('roleBtn'),tx=document.getElementById('roleBtnText');
   btn.style.display=role?'flex':'none';if(!role)return;
   const n=accState.requests.length;
@@ -709,8 +715,22 @@ function renderSectioned(w,shown,secOrder){
   });
 }
 
+/* What people who aren't approved see instead of the registry */
+function lockScreen(w){
+  const[ico,title,sub,btn]=access===undefined?['⏳','Loading…','','']
+    :access===null?['🔒','This registry is private','Sign in with Google, then request access. You can view and edit once the admin approves you.','<button class="btn btn-p" onclick="toggleAuth()">Sign in with Google</button>']
+    :access==='viewer'?['✋','You don’t have access yet','Request access and the admin will review it.','<button class="btn btn-p" onclick="FB.requestAccess()">Request access</button>']
+    :access==='pending'?['⏳','Access requested','You’ll get in automatically as soon as the admin approves — no need to reload.','']
+    :['⏳','Checking your access…','',''];
+  w.innerHTML=`<div style="text-align:center;padding:4rem 1rem;color:var(--muted)"><div style="font-size:40px;margin-bottom:1rem;opacity:.5">${ico}</div><div style="font-weight:700;font-size:16px;color:var(--text)">${title}</div><div style="font-size:13px;margin:6px auto 1.25rem;max-width:420px">${sub}</div>${btn}</div>`;
+}
+
 function render(){
-  const w=document.getElementById('cw');w.innerHTML='';
+  const w=document.getElementById('cw');
+  const ok=access==='admin'||access==='editor';
+  document.body.classList.toggle('locked',!ok);
+  if(!ok){lockScreen(w);return}
+  w.innerHTML='';
   const shown=skills.filter(s=>(curF==='all'||s.level===curF)&&(!curS||(s.id+' '+s.desc).toLowerCase().includes(curS)));
   if(!shown.length){
     const[ico,title,sub]=!loaded?['⏳','Loading shared registry…','Connecting to the cloud database']
@@ -1050,7 +1070,6 @@ function normaliseSkills(arr){
 
 /* ── Boot ── */
 render();
-setTimeout(()=>{if(!loaded)showBanner('⚠ Cannot reach the shared registry — check your internet connection, or whether a browser extension is blocking Google/Firebase.')},15000);
 </script>
 
 <!-- ── Firestore + Google sign-in ── -->
@@ -1127,28 +1146,43 @@ function announce(changes){
   showToast('t-live',others.length===1?`↻ ${d0.id} ${verb[c0.type]}${c0.type==='removed'?'':` by ${who}`}`:`↻ ${others.length} skills changed by ${who}`,4000);
 }
 
-let first=true;
-onSnapshot(col,snap=>{
-  const rows=snap.docs.map(d=>d.data({serverTimestamps:'estimate'}))
-    .sort((a,b)=>(a.order??0)-(b.order??0)||String(a.id).localeCompare(String(b.id)));
-  orders={};const meta={};
-  const list=rows.map(({order,updatedBy,updatedAt,...s})=>{
-    orders[s.id]=order;meta[s.id]={by:updatedBy,at:updatedAt?updatedAt.toDate():null};return s;
-  });
-  if(!first&&!snap.metadata.hasPendingWrites)announce(snap.docChanges());
-  first=false;showBanner('');setSkills(list,meta);
-},err=>showBanner(`⚠ Cannot reach the shared registry: ${err.message}`));
+/* The registry is private: only listen to skills while the signed-in user is the admin or an approved editor */
+let unsubSkills=null,first=true,connTimer=null;
+function startSkills(){
+  if(unsubSkills)return;
+  first=true;
+  connTimer=setTimeout(()=>{if(!loaded)showBanner('⚠ Cannot reach the shared registry — check your internet connection, or whether a browser extension is blocking Google/Firebase.')},15000);
+  unsubSkills=onSnapshot(col,snap=>{
+    const rows=snap.docs.map(d=>d.data({serverTimestamps:'estimate'}))
+      .sort((a,b)=>(a.order??0)-(b.order??0)||String(a.id).localeCompare(String(b.id)));
+    orders={};const meta={};
+    const list=rows.map(({order,updatedBy,updatedAt,...s})=>{
+      orders[s.id]=order;meta[s.id]={by:updatedBy,at:updatedAt?updatedAt.toDate():null};return s;
+    });
+    if(!first&&!snap.metadata.hasPendingWrites)announce(snap.docChanges());
+    first=false;clearTimeout(connTimer);showBanner('');setSkills(list,meta);
+  },err=>{if(unsubSkills)showBanner(`⚠ Cannot reach the shared registry: ${err.message}`)});
+}
+function stopSkills(){
+  if(unsubSkills){unsubSkills();unsubSkills=null}
+  clearTimeout(connTimer);showBanner('');orders={};
+  if(loaded||skills.length)clearSkills();
+}
+function applyRole(r){
+  role=r;setRoleUI(r);
+  r==='admin'||r==='editor'?startSkills():stopSkills();
+}
 
 /* ── Edit access: one doc per approved editor in "editors", one per pending request in "requests", both keyed by email ── */
 let role=null,unsubs=[];
 function watchRole(user){
   unsubs.forEach(u=>u());unsubs=[];accState={requests:[],editors:[]};
-  if(!user){role=null;setRoleUI(null);return}
-  if(user.email===ADMIN_EMAIL){role='admin';setRoleUI(role);watchAdmin();return}
-  role='checking';setRoleUI(role);
+  if(!user){applyRole(null);return}
+  if(user.email===ADMIN_EMAIL){applyRole('admin');watchAdmin();return}
+  applyRole('checking');
   /* Live, so approval takes effect without a reload */
   let isEditor=null,hasRequest=null;
-  const update=()=>{if(isEditor===null||hasRequest===null)return;role=isEditor?'editor':hasRequest?'pending':'viewer';setRoleUI(role)};
+  const update=()=>{if(isEditor===null||hasRequest===null)return;applyRole(isEditor?'editor':hasRequest?'pending':'viewer')};
   unsubs.push(onSnapshot(doc(db,'editors',user.email),d=>{
     const was=role;isEditor=d.exists();update();
     if(was==='pending'&&role==='editor')showToast('t-live','✓ Your edit access was approved — you can now make changes.',5000);
