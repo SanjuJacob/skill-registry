@@ -28,8 +28,8 @@ A shared, real-time registry for the robot capability model. It organizes skills
 
 - **Five-level hierarchy:** L0 Resources, L1 Elementary, L2 Basic Skills, L3 Composite and L4 Task Plans, with sections, filters and search.
 - **Real-time collaboration:** changes sync to every open browser within about a second, with a notification showing who changed what.
-- **Private by default:** only approved accounts can view or edit. Everyone else sees a lock screen.
-- **Approval workflow:** users sign in with Google and request access, and the admin approves or denies them from inside the app.
+- **Open viewing:** anyone with the link can browse and download the registry, with no account needed.
+- **Approved editors only:** only accounts the admin has approved can sign in and make changes. Anyone else who tries to sign in is signed straight back out, and their attempt appears for the admin to approve.
 - **Edit history:** each skill records who last edited it and when.
 - **Import and export:** load or download the full registry as YAML or JSON.
 - **Folder auto-save (optional):** in Chrome, Edge or Brave, link a local folder to write YAML and JSON copies on every change.
@@ -44,7 +44,7 @@ The app is a single static HTML page with no build step and no server to maintai
    │
    ├── Hosting ............ GitHub Pages            serves the page
    ├── Sign-in ............ Firebase Authentication Google accounts
-   └── Data ............... Cloud Firestore         skills, editors, access requests
+   └── Data ............... Cloud Firestore         skills, editors, sign-in requests
                               └── security rules    enforce who can read and write
 ```
 
@@ -59,9 +59,9 @@ The app is a single static HTML page with no build step and no server to maintai
 
 | Collection | Contents | Who can access |
 |---|---|---|
-| `skills` | One document per skill | Read and write: admin and approved editors |
+| `skills` | One document per skill | Read: everyone. Write: admin and approved editors |
 | `editors` | One document per approved user, keyed by email | Admin manages; users can read their own entry |
-| `requests` | One document per pending access request, keyed by email | Users create their own; admin reviews |
+| `requests` | One document per unapproved sign-in attempt, keyed by email | Created automatically on a rejected sign-in; admin reviews |
 
 ## Repository structure
 
@@ -77,25 +77,31 @@ skill-registry/
 
 | User | Can view | Can edit | What they see |
 |---|:-:|:-:|---|
-| Not signed in | ✗ | ✗ | Lock screen with **Sign in with Google** |
-| Signed in, not approved | ✗ | ✗ | **Request access** button |
-| Request pending | ✗ | ✗ | "Access requested". They get in automatically when approved. |
-| Approved editor | ✓ | ✓ | Full registry |
+| Visitor (not signed in) | ✓ | ✗ | Full registry, read-only, with downloads |
+| Unapproved account | ✓ | ✗ | Signed back out immediately; the attempt is sent to the admin |
+| Approved editor | ✓ | ✓ | Full registry with editing controls |
 | Admin | ✓ | ✓ | Full registry plus **👥 Manage access** |
 
-Approval and removal take effect immediately, with no page reload.
+Removing an editor signs them out straight away, with no page reload.
 
 ## Using the registry
 
-1. Open the [live site](https://sanjujacob.github.io/skill-registry/).
-2. Click **Sign in with Google** and choose your account.
-3. Click **Request access**. You'll be let in automatically once the admin approves.
-4. Once approved, you can:
-   - browse by level using the sidebar, the summary cards or the filter bar
-   - search by skill ID or description
-   - click a skill card to expand its details
-   - add, edit or delete skills (changes save instantly for everyone)
-   - **Download YAML / JSON** for an offline snapshot
+### Viewing (everyone)
+
+Open the [live site](https://sanjujacob.github.io/skill-registry/). No sign-in is needed. You can:
+
+- browse by level using the sidebar, the summary cards or the filter bar
+- search by skill ID or description
+- click a skill card to expand its details
+- **Download YAML / JSON** for an offline snapshot
+
+### Editing (approved editors)
+
+1. Ask the admin to approve your Google account.
+2. Click **Editor sign-in** in the sidebar and choose that account.
+3. Add, edit or delete skills. Changes save instantly for everyone.
+
+If your account isn't approved yet, you'll be signed out again and the admin will see your attempt.
 
 > **Import** and **Reset to defaults** replace the entire shared registry for all users. Download a backup first.
 
@@ -112,12 +118,12 @@ Sign in as the admin and open **👥 Manage access** in the sidebar.
 
 | Task | How |
 |---|---|
-| Approve a request | **✓ Approve** next to the request |
-| Deny a request | **✗ Deny** |
-| Grant access without a request | Type the email under **Add an editor directly** |
-| Revoke access | **Remove** next to the editor |
+| Approve someone who tried to sign in | **✓ Approve** under **Sign-in requests** |
+| Dismiss a sign-in attempt | **✗ Deny** |
+| Approve someone in advance | Type their email under **Add an editor directly** |
+| Revoke access | **Remove** next to the editor. They're signed out immediately. |
 
-New requests trigger a notification while the admin has the site open.
+New sign-in attempts trigger a notification while the admin has the site open.
 
 ### Firebase console actions
 
@@ -233,7 +239,7 @@ This is ample for team use. Current figures are on the [Firebase pricing page](h
 | Old version of the page appears | Browser cache. Press **Ctrl + Shift + R**. |
 | "Cannot reach the shared registry" | Network or an extension blocking Google/Firebase domains. Check the connection or try another browser. |
 | Sign-in popup closes or fails | The site's domain is missing from **Authentication → Authorized domains**, or the browser is blocking popups. |
-| "Not allowed — your account cannot edit" | The account hasn't been approved, or was removed. Request access again. |
+| Signed out right after signing in | The account isn't approved, or was removed. Ask the admin to approve it. |
 | **Manage access** not visible | You're not signed in as the admin account, or the page is cached. |
-| **Request access** fails, or approved users can't see the registry | The security rules in the Firebase console are missing or outdated. Republish the current rules. |
+| "Missing or insufficient permissions", or approved editors can't save | The security rules in the Firebase console are missing or outdated. Republish the current rules. |
 | Folder auto-save option missing | Only available in Chromium-based browsers (Chrome, Edge, Brave) and only for approved users. |

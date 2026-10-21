@@ -104,7 +104,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
 .unsaved-banner{display:none;align-items:center;gap:10px;background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:12px;padding:.65rem 1rem;margin-bottom:1.5rem;font-size:15px;color:var(--amber-t);font-weight:600}
 .unsaved-banner.show{display:flex}
 /* Private registry: hide everything that shows or changes skills until the viewer is approved */
-body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,body.locked .expbar,body.locked #saveStatus,body.locked #dirStatus{display:none}
+/* Public view: hide editing controls from anyone who isn't a signed-in approved editor */
+body.viewonly .edit-only,body.viewonly .sec-add,body.viewonly #saveStatus{display:none}
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:2rem}
 .sc{background:var(--surf1);border:1px solid var(--bdr);border-radius:16px;padding:1rem 1.1rem;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;position:relative;overflow:hidden}
 [data-theme="dark"] .sc{background:var(--card-bg)}
@@ -256,11 +257,11 @@ body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,b
   <div class="sb-section">
     <div class="sb-label">Storage</div>
     <div class="save-pill saved" id="saveStatus"><span class="save-dot"></span><span id="saveStatusText">All changes saved</span></div>
-    <div class="dir-btn" id="authBtn" onclick="toggleAuth()" title="Sign in with Google to add, edit or delete skills">🔒 <span id="authBtnText">Sign in with Google to edit</span></div>
+    <div class="dir-btn" id="authBtn" onclick="toggleAuth()" title="Approved editors only — ask the admin for access">🔒 <span id="authBtnText">Editor sign-in</span></div>
     <div class="dir-btn" id="roleBtn" onclick="roleAction()" style="display:none"><span id="roleBtnText"></span></div>
     <div class="dir-btn" id="dirStatus" onclick="pickDirectory()" title="Link a folder — files auto-write on every change">📁 <span id="dirStatusText">Link folder for auto-save</span></div>
   </div>
-  <div class="sb-section needs-access">
+  <div class="sb-section">
     <div class="sb-label">Levels</div>
     <button class="nb active" id="nav-all" onclick="nf('all',this)"><span class="ndot" style="background:#64748b"></span>All skills<span class="nc" id="nc-all">0</span></button>
     <button class="nb" id="nav-resource" onclick="nf('resource',this)"><span class="ndot" style="background:#10b981"></span>L0 · Resources<span class="nc" id="nc-resource">0</span></button>
@@ -269,13 +270,13 @@ body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,b
     <button class="nb" id="nav-composite" onclick="nf('composite',this)"><span class="ndot" style="background:#f59e0b"></span>L3 · Composite<span class="nc" id="nc-composite">0</span></button>
     <button class="nb" id="nav-task" onclick="nf('task',this)"><span class="ndot" style="background:#ef4444"></span>L4 · Task Plans<span class="nc" id="nc-task">0</span></button>
   </div>
-  <div class="sb-section needs-access">
+  <div class="sb-section">
     <div class="sb-label">Actions</div>
-    <button class="nb" onclick="openAdd()">＋ &nbsp;Add skill</button>
-    <button class="nb" onclick="triggerImport()">↑ &nbsp;Import YAML / JSON</button>
+    <button class="nb edit-only" onclick="openAdd()">＋ &nbsp;Add skill</button>
+    <button class="nb edit-only" onclick="triggerImport()">↑ &nbsp;Import YAML / JSON</button>
     <button class="nb" onclick="exp('yaml')">↓ &nbsp;Download YAML</button>
     <button class="nb" onclick="exp('json')">↓ &nbsp;Download JSON</button>
-    <button class="nb nb-red" onclick="resetToDefaults()">↺ &nbsp;Reset to defaults</button>
+    <button class="nb nb-red edit-only" onclick="resetToDefaults()">↺ &nbsp;Reset to defaults</button>
   </div>
   <div class="sb-foot">Shared registry — changes sync live to everyone.<br>Link a folder to also write YAML &amp; JSON on every change.</div>
 </aside>
@@ -290,10 +291,10 @@ body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,b
       <div class="ph-sub">5-level hierarchy · live shared registry · v3.0.0</div>
     </div>
     <div class="ha">
-      <button class="btn" onclick="triggerImport()" title="Import YAML or JSON file">↑ Import</button>
+      <button class="btn edit-only" onclick="triggerImport()" title="Import YAML or JSON file">↑ Import</button>
       <button class="btn btn-s" onclick="exp('yaml')">↓ YAML</button>
       <button class="btn btn-s" onclick="exp('json')">↓ JSON</button>
-      <button class="btn btn-p" onclick="openAdd()">＋ Add skill</button>
+      <button class="btn btn-p edit-only" onclick="openAdd()">＋ Add skill</button>
     </div>
   </div>
   <div class="sg" id="sg"></div>
@@ -416,13 +417,13 @@ body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,b
 <div class="mo" id="accMo" onclick="if(event.target===this)closeAccess()">
 <div class="md">
   <h3><span>Manage edit access</span><button class="btn btn-g btn-sm" onclick="closeAccess()" style="font-size:15px;padding:4px 9px">✕</button></h3>
-  <div class="sdiv">Access requests</div>
+  <div class="sdiv">Sign-in requests (not yet approved)</div>
   <div id="accReqs"></div>
   <div class="sdiv">Editors</div>
   <div id="accEds"></div>
   <div class="sdiv">Add an editor directly</div>
   <div style="display:flex;gap:8px"><input class="fi" id="accAdd" placeholder="name@gmail.com" style="margin:0" onkeydown="if(event.key==='Enter')addEditor()"><button class="btn btn-p" onclick="addEditor()">＋ Add</button></div>
-  <div class="fhint">Everyone can view the registry. Only you and the editors listed here can change it.</div>
+  <div class="fhint">Anyone with the link can view the registry. Only you and the editors listed here can sign in and make changes.</div>
 </div>
 </div>
 
@@ -489,7 +490,7 @@ const DEFAULT_SKILLS=[
 
 /* ── State ── */
 let skills=[],curF='all',curS='',editId=null,pendingDelId=null,dirHandle=null,loaded=false,skillMeta={};
-let access;/* undefined until sign-in state is known, then null (signed out) or a role: checking/viewer/pending/editor/admin */
+let access=null;/* null (view only) or a role: checking/editor/admin */
 
 /* ── Shared cloud registry (Firestore glue lives in the module script at the bottom, exposed as window.FB) ── */
 /* Called by FB on every live snapshot: arr is the ordered skill list, meta maps id → {by, at} */
@@ -500,23 +501,19 @@ function setSkills(arr,meta){
   skills.forEach(s=>{if(!s.section&&defMap[s.id]&&defMap[s.id].section)s.section=defMap[s.id].section});
   render();autoWriteFiles();
 }
-/* Called by FB when access is lost (signed out / removed) — clears the data without touching a linked folder */
-function clearSkills(){skills=[];skillMeta={};loaded=false;render()}
 function showBanner(msg){const b=document.getElementById('unsavedBanner');b.textContent=msg;b.classList.toggle('show',!!msg)}
 function editedLine(id){
   const m=skillMeta[id];if(!m||!m.by)return'';
   const when=m.at?` · ${m.at.toLocaleString()}`:'';
   return`<span style="margin-left:auto;align-self:center;font-size:11px;color:var(--muted)">Last edited by ${esc(m.by)}${when}</span>`;
 }
-/* Edits need a Google sign-in plus admin approval; explains what's missing and returns false otherwise */
+/* Only the admin and approved editors (the only accounts allowed to stay signed in) can change anything */
 function canEdit(){
   if(!window.FB){showToast('t-err','⚠ Still connecting to the shared registry — try again in a moment.',4000);return false}
-  if(!FB.user()){showToast('t-warn','🔒 Sign in with Google to make changes.',3500);FB.signIn();return false}
   const r=FB.role();
   if(r==='admin'||r==='editor')return true;
-  showToast('t-warn',r==='pending'?'⏳ Your edit access request is waiting for approval.'
-    :r==='viewer'?'🔒 You need edit access — click "Request edit access" in the sidebar.'
-    :'Checking your access — try again in a moment.',4500);
+  showToast('t-warn',r==='checking'?'Checking your access — try again in a moment.'
+    :'🔒 Only approved editors can make changes. Use Editor sign-in if the admin has given you access.',4500);
   return false;
 }
 function toggleAuth(){if(!window.FB)return;FB.user()?FB.signOut():FB.signIn()}
@@ -524,31 +521,26 @@ function setAuthUI(user){
   const btn=document.getElementById('authBtn'),tx=document.getElementById('authBtnText');
   btn.classList.toggle('linked',!!user);
   btn.firstChild.textContent=user?'👤 ':'🔒 ';
-  tx.textContent=user?`${user.email} · Sign out`:'Sign in with Google to edit';
+  tx.textContent=user?`${user.email} · Sign out`:'Editor sign-in';
 }
 
 /* ── Edit access: roles and the admin's Manage access panel ── */
 let accState={requests:[],editors:[]};
 const ROLE_UI={
   checking:['… Checking edit access',false],
-  viewer:['✋ Request edit access',false],
-  pending:['⏳ Access requested — awaiting approval',false],
   editor:['✏ You have edit access',true],
 };
 function setRoleUI(role){
-  if(access!==role){access=role;render()}
+  access=role;
+  document.body.classList.toggle('viewonly',!(role==='admin'||role==='editor'));
   const btn=document.getElementById('roleBtn'),tx=document.getElementById('roleBtnText');
   btn.style.display=role?'flex':'none';if(!role)return;
   const n=accState.requests.length;
   const[label,ok]=role==='admin'?[`👥 Manage access${n?` · ${n} request${n>1?'s':''}`:''}`,true]:ROLE_UI[role];
   tx.textContent=label;btn.classList.toggle('linked',ok);
-  btn.style.cursor=role==='viewer'||role==='admin'?'pointer':'default';
+  btn.style.cursor=role==='admin'?'pointer':'default';
 }
-function roleAction(){
-  const r=FB.role();
-  if(r==='viewer')FB.requestAccess();
-  else if(r==='admin')openAccess();
-}
+function roleAction(){if(FB.role()==='admin')openAccess()}
 function openAccess(){renderAccess();document.getElementById('accMo').classList.add('show')}
 function closeAccess(){document.getElementById('accMo').classList.remove('show')}
 /* Called by FB with whichever list changed */
@@ -562,7 +554,7 @@ function renderAccess(){
   document.getElementById('accReqs').innerHTML=accState.requests.length
     ?accState.requests.map(r=>accRow(esc(r.email),`${esc(r.name||'')}${r.name?' · ':''}requested ${esc(when(r.requestedAt))}`,
       `<button class="btn btn-sm btn-p" data-email="${esc(r.email)}" onclick="FB.approve(this.dataset.email)">✓ Approve</button><button class="btn btn-sm btn-d" data-email="${esc(r.email)}" onclick="FB.deny(this.dataset.email)">✗ Deny</button>`)).join('')
-    :none('No pending requests.');
+    :none('No pending sign-in requests.');
   const admin=window.FB?FB.adminEmail:'';
   document.getElementById('accEds').innerHTML=accRow(esc(admin),'Admin (you)','')+
     (accState.editors.length
@@ -579,7 +571,6 @@ function setSaveStatus(s){const el=document.getElementById('saveStatus'),tx=docu
 
 /* ── File System Access API ── */
 async function pickDirectory(){
-  if(!(access==='admin'||access==='editor'))return;
   if(!('showDirectoryPicker' in window)){showToast('t-warn','⚠ Use Chrome/Edge/Brave for folder auto-save.',5000);return}
   try{
     dirHandle=await window.showDirectoryPicker({mode:'readwrite'});
@@ -659,8 +650,8 @@ function makeCard(s,idx){
       <div class="pg">${cardBody(s)}</div>
       ${s.ep?`<div class="ep">${esc(s.ep)}</div>`:''}
       <div class="ca">
-        <button class="btn btn-sm" onclick="editSk(${idx})">✏ Edit</button>
-        <button class="btn btn-sm btn-d" onclick="requestDelete(${idx})">🗑 Delete</button>
+        <button class="btn btn-sm edit-only" onclick="editSk(${idx})">✏ Edit</button>
+        <button class="btn btn-sm btn-d edit-only" onclick="requestDelete(${idx})">🗑 Delete</button>
         ${editedLine(s.id)}
       </div>
     </div>`;
@@ -716,26 +707,12 @@ function renderSectioned(w,shown,secOrder){
   });
 }
 
-/* What people who aren't approved see instead of the registry */
-function lockScreen(w){
-  const[ico,title,sub,btn]=access===undefined?['⏳','Loading…','','']
-    :access===null?['🔒','This registry is private','Sign in with Google, then request access. You can view and edit once the admin approves you.','<button class="btn btn-p" onclick="toggleAuth()">Sign in with Google</button>']
-    :access==='viewer'?['✋','You don’t have access yet','Request access and the admin will review it.','<button class="btn btn-p" onclick="FB.requestAccess()">Request access</button>']
-    :access==='pending'?['⏳','Access requested','You’ll get in automatically as soon as the admin approves — no need to reload.','']
-    :['⏳','Checking your access…','',''];
-  w.innerHTML=`<div style="text-align:center;padding:4rem 1rem;color:var(--muted)"><div style="font-size:40px;margin-bottom:1rem;opacity:.5">${ico}</div><div style="font-weight:700;font-size:16px;color:var(--text)">${title}</div><div style="font-size:13px;margin:6px auto 1.25rem;max-width:420px">${sub}</div>${btn}</div>`;
-}
-
 function render(){
-  const w=document.getElementById('cw');
-  const ok=access==='admin'||access==='editor';
-  document.body.classList.toggle('locked',!ok);
-  if(!ok){lockScreen(w);return}
-  w.innerHTML='';
+  const w=document.getElementById('cw');w.innerHTML='';
   const shown=skills.filter(s=>(curF==='all'||s.level===curF)&&(!curS||(s.id+' '+s.desc).toLowerCase().includes(curS)));
   if(!shown.length){
     const[ico,title,sub]=!loaded?['⏳','Loading shared registry…','Connecting to the cloud database']
-      :!skills.length?['📭','The registry is empty','Sign in, then Import a YAML / JSON export or use Reset to defaults']
+      :!skills.length?['📭','The registry is empty','An editor can load it with Import or Reset to defaults']
       :['🔍','No skills match','Try a different filter or search term'];
     w.innerHTML=`<div style="text-align:center;padding:4rem 1rem;color:var(--muted)"><div style="font-size:40px;margin-bottom:1rem;opacity:.3">${ico}</div><div style="font-weight:700;font-size:16px">${title}</div><div style="font-size:13px;margin-top:6px">${sub}</div></div>`;
     updateCounts();return;
@@ -1070,7 +1047,7 @@ function normaliseSkills(arr){
 }
 
 /* ── Boot ── */
-render();
+document.body.classList.add('viewonly');render();
 </script>
 
 <!-- ── Firestore + Google sign-in ── -->
@@ -1147,63 +1124,55 @@ function announce(changes){
   showToast('t-live',others.length===1?`↻ ${d0.id} ${verb[c0.type]}${c0.type==='removed'?'':` by ${who}`}`:`↻ ${others.length} skills changed by ${who}`,4000);
 }
 
-/* The registry is private: only listen to skills while the signed-in user is the admin or an approved editor */
-let unsubSkills=null,first=true,connTimer=null;
-function startSkills(){
-  if(unsubSkills)return;
-  first=true;
-  connTimer=setTimeout(()=>{if(!loaded)showBanner('⚠ Cannot reach the shared registry — check your internet connection, or whether a browser extension is blocking Google/Firebase.')},15000);
-  unsubSkills=onSnapshot(col,snap=>{
-    const rows=snap.docs.map(d=>d.data({serverTimestamps:'estimate'}))
-      .sort((a,b)=>(a.order??0)-(b.order??0)||String(a.id).localeCompare(String(b.id)));
-    orders={};const meta={};
-    const list=rows.map(({order,updatedBy,updatedAt,...s})=>{
-      orders[s.id]=order;meta[s.id]={by:updatedBy,at:updatedAt?updatedAt.toDate():null};return s;
-    });
-    if(!first&&!snap.metadata.hasPendingWrites)announce(snap.docChanges());
-    first=false;clearTimeout(connTimer);showBanner('');setSkills(list,meta);
-  },err=>{if(unsubSkills)showBanner(`⚠ Cannot reach the shared registry: ${err.message}`)});
-}
-function stopSkills(){
-  if(unsubSkills){unsubSkills();unsubSkills=null}
-  clearTimeout(connTimer);showBanner('');orders={};
-  if(loaded||skills.length)clearSkills();
-}
-function applyRole(r){
-  role=r;setRoleUI(r);
-  r==='admin'||r==='editor'?startSkills():stopSkills();
-}
+/* Anyone can view: listen to the registry from page load, signed in or not */
+let first=true;
+const connTimer=setTimeout(()=>{if(!loaded)showBanner('⚠ Cannot reach the shared registry — check your internet connection, or whether a browser extension is blocking Google/Firebase.')},15000);
+onSnapshot(col,snap=>{
+  const rows=snap.docs.map(d=>d.data({serverTimestamps:'estimate'}))
+    .sort((a,b)=>(a.order??0)-(b.order??0)||String(a.id).localeCompare(String(b.id)));
+  orders={};const meta={};
+  const list=rows.map(({order,updatedBy,updatedAt,...s})=>{
+    orders[s.id]=order;meta[s.id]={by:updatedBy,at:updatedAt?updatedAt.toDate():null};return s;
+  });
+  if(!first&&!snap.metadata.hasPendingWrites)announce(snap.docChanges());
+  first=false;clearTimeout(connTimer);showBanner('');setSkills(list,meta);
+},err=>showBanner(`⚠ Cannot reach the shared registry: ${err.message}`));
 
-/* ── Edit access: one doc per approved editor in "editors", one per pending request in "requests", both keyed by email ── */
+/* ── Sign-in is for approved editors only: one doc per editor in "editors", keyed by email ── */
 let role=null,unsubs=[];
+function applyRole(r){role=r;setRoleUI(r)}
 function watchRole(user){
   unsubs.forEach(u=>u());unsubs=[];accState={requests:[],editors:[]};
   if(!user){applyRole(null);return}
   if(user.email===ADMIN_EMAIL){applyRole('admin');watchAdmin();return}
   applyRole('checking');
-  /* Live, so approval takes effect without a reload */
-  let isEditor=null,hasRequest=null;
-  const update=()=>{if(isEditor===null||hasRequest===null)return;applyRole(isEditor?'editor':hasRequest?'pending':'viewer')};
+  /* Live, so removing an editor signs them out straight away */
   unsubs.push(onSnapshot(doc(db,'editors',user.email),d=>{
-    const was=role;isEditor=d.exists();update();
-    if(was==='pending'&&role==='editor')showToast('t-live','✓ Your edit access was approved — you can now make changes.',5000);
-  },()=>{isEditor=false;update()}));
-  unsubs.push(onSnapshot(doc(db,'requests',user.email),d=>{hasRequest=d.exists();update()},()=>{hasRequest=false;update()}));
+    if(d.exists())applyRole('editor');
+    else rejectSignIn(user,role==='editor');
+  },()=>rejectSignIn(user,false)));
+}
+/* Unapproved accounts are signed straight back out; their attempt is logged as a request for the admin to approve */
+async function rejectSignIn(user,wasEditor){
+  unsubs.forEach(u=>u());unsubs=[];
+  if(!wasEditor){
+    /* Fails harmlessly if they already have a pending request (rules only allow creating one) */
+    try{await setDoc(doc(db,'requests',user.email),{email:user.email,name:user.displayName||'',requestedAt:serverTimestamp()})}catch(e){}
+  }
+  await signOut(auth);
+  showToast('t-warn',wasEditor?'🔒 Your edit access was removed — you have been signed out.'
+    :`🔒 ${user.email} isn't approved to sign in. The admin has been notified and can give you access.`,7000);
 }
 function watchAdmin(){
   let first=true;
   unsubs.push(onSnapshot(collection(db,'requests'),snap=>{
-    if(!first)snap.docChanges().filter(c=>c.type==='added').forEach(c=>showToast('t-live',`✋ ${c.doc.data().email} requested edit access`,6000));
+    if(!first)snap.docChanges().filter(c=>c.type==='added').forEach(c=>showToast('t-live',`✋ ${c.doc.data().email} tried to sign in — approve them in Manage access`,6000));
     first=false;
     setAccessLists({requests:snap.docs.map(d=>d.data({serverTimestamps:'estimate'}))});
   },err=>showToast('t-err',`⚠ Cannot load access requests: ${err.message}`,5000)));
   unsubs.push(onSnapshot(collection(db,'editors'),snap=>{
     setAccessLists({editors:snap.docs.map(d=>d.data({serverTimestamps:'estimate'})).sort((a,b)=>a.email.localeCompare(b.email))});
   },err=>showToast('t-err',`⚠ Cannot load editors: ${err.message}`,5000)));
-}
-function requestAccess(){
-  const u=auth.currentUser;
-  return write(()=>setDoc(doc(db,'requests',u.email),{email:u.email,name:u.displayName||'',requestedAt:serverTimestamp()}),'✓ Request sent — you can edit once it is approved');
 }
 /* Approving moves the request into "editors"; also used to add someone directly by email */
 function approve(email){
@@ -1230,7 +1199,7 @@ window.FB={
   }),
   signOut:()=>signOut(auth),
   saveSkill,deleteSkill,replaceAll,
-  requestAccess,approve,deny,removeEditor
+  approve,deny,removeEditor
 };
 </script>
 </body>
