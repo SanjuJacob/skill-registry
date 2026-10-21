@@ -104,7 +104,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
 .unsaved-banner{display:none;align-items:center;gap:10px;background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:12px;padding:.65rem 1rem;margin-bottom:1.5rem;font-size:15px;color:var(--amber-t);font-weight:600}
 .unsaved-banner.show{display:flex}
 /* Private registry: hide everything that shows or changes skills until the viewer is approved */
-body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,body.locked .expbar{display:none}
+body.locked .needs-access,body.locked .ha,body.locked .sg,body.locked .toolbar,body.locked .expbar,body.locked #saveStatus,body.locked #dirStatus{display:none}
 .sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:2rem}
 .sc{background:var(--surf1);border:1px solid var(--bdr);border-radius:16px;padding:1rem 1.1rem;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;position:relative;overflow:hidden}
 [data-theme="dark"] .sc{background:var(--card-bg)}
@@ -579,6 +579,7 @@ function setSaveStatus(s){const el=document.getElementById('saveStatus'),tx=docu
 
 /* ── File System Access API ── */
 async function pickDirectory(){
+  if(!(access==='admin'||access==='editor'))return;
   if(!('showDirectoryPicker' in window)){showToast('t-warn','⚠ Use Chrome/Edge/Brave for folder auto-save.',5000);return}
   try{
     dirHandle=await window.showDirectoryPicker({mode:'readwrite'});
