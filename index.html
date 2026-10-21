@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Registry — Integrated</title>
+<style>
+:root,[data-theme="dark"]{
+  --page:#080b12;--surf0:#0d1117;--surf1:#111827;--surf2:#161e2e;--surf3:#1c2640;--surf4:#243050;
+  --bdr:rgba(255,255,255,0.06);--bdr2:rgba(255,255,255,0.11);--bdr3:rgba(255,255,255,0.18);
+  --text:#f1f5f9;--text2:#cbd5e1;--muted:#64748b;--dim:#334155;
+  --sb-bg:#060911;--sb-bdr:rgba(255,255,255,0.05);--sb-text:#4b5e7a;--sb-hover:rgba(255,255,255,0.04);--sb-active:rgba(99,102,241,0.15);--sb-active-c:#818cf8;
+  --accent:#6366f1;--accent2:#8b5cf6;--accent-glow:rgba(99,102,241,0.25);--accent-bg:rgba(99,102,241,0.10);--accent-bdr:rgba(99,102,241,0.35);--accent-text:#a5b4fc;
+  --l0:#10b981;--l0-bg:rgba(16,185,129,.12);--l0-bdr:rgba(16,185,129,.30);--l0-t:#6ee7b7;
+  --l1:#6366f1;--l1-bg:rgba(99,102,241,.12);--l1-bdr:rgba(99,102,241,.30);--l1-t:#a5b4fc;
+  --l2:#a855f7;--l2-bg:rgba(168,85,247,.12);--l2-bdr:rgba(168,85,247,.30);--l2-t:#d8b4fe;
+  --l3:#f59e0b;--l3-bg:rgba(245,158,11,.12);--l3-bdr:rgba(245,158,11,.30);--l3-t:#fcd34d;
+  --l4:#ef4444;--l4-bg:rgba(239,68,68,.12);--l4-bdr:rgba(239,68,68,.30);--l4-t:#fca5a5;
+  --green:#10b981;--green-bg:rgba(16,185,129,.12);--green-bdr:rgba(16,185,129,.30);--green-t:#6ee7b7;
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,.12);--amber-bdr:rgba(245,158,11,.30);--amber-t:#fcd34d;
+  --red:#ef4444;--red-bg:rgba(239,68,68,.12);--red-bdr:rgba(239,68,68,.30);--red-t:#fca5a5;
+  --blue:#6366f1;--blue-bg:rgba(99,102,241,.12);--blue-bdr:rgba(99,102,241,.30);--blue-t:#a5b4fc;
+  --teal:#14b8a6;--teal-bg:rgba(20,184,166,.12);--teal-bdr:rgba(20,184,166,.30);--teal-t:#5eead4;
+  --pur:#a855f7;--pur-bg:rgba(168,85,247,.12);--pur-bdr:rgba(168,85,247,.30);--pur-t:#d8b4fe;
+  --shadow-xs:0 1px 3px rgba(0,0,0,.5);--shadow-sm:0 2px 8px rgba(0,0,0,.55),0 1px 2px rgba(0,0,0,.4);
+  --shadow-md:0 8px 24px rgba(0,0,0,.65),0 2px 6px rgba(0,0,0,.4);--shadow-lg:0 16px 48px rgba(0,0,0,.75);
+  --card-bg:linear-gradient(145deg,#111827,#0f1623);--card-open:rgba(99,102,241,0.18);--card-glow:0 0 0 1px rgba(99,102,241,.45),0 4px 24px rgba(99,102,241,.12);
+  --modal-overlay:rgba(0,0,0,0.80);--modal-bg:#0d1117;--modal-bdr:rgba(255,255,255,0.09);
+  --tb-bg:rgba(13,17,23,0.95);--search-bg:rgba(22,30,46,0.8);
+  --tag-bg:rgba(255,255,255,0.05);--tag-c:#64748b;--tag-bdr:rgba(255,255,255,0.08);
+  --t-s-bg:#052e16;--t-s-c:#4ade80;--t-s-bdr:rgba(74,222,128,.25);
+  --t-i-bg:#1e1b4b;--t-i-c:#a5b4fc;--t-i-bdr:rgba(165,180,252,.25);
+  --t-w-bg:#1c1007;--t-w-c:#fbbf24;--t-w-bdr:rgba(251,191,36,.25);
+  --t-e-bg:#1a0607;--t-e-c:#f87171;--t-e-bdr:rgba(248,113,113,.25);
+}
+[data-theme="light"]{
+  --page:#f4f6fb;--surf0:#fff;--surf1:#fff;--surf2:#f8fafc;--surf3:#f1f5f9;--surf4:#e8edf4;
+  --bdr:#e2e8f0;--bdr2:#cbd5e1;--bdr3:#94a3b8;
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--dim:#94a3b8;
+  --sb-bg:#1e293b;--sb-bdr:rgba(255,255,255,0.07);--sb-text:#94a3b8;--sb-hover:rgba(255,255,255,0.06);--sb-active:rgba(99,102,241,0.2);--sb-active-c:#a5b4fc;
+  --accent:#4f46e5;--accent2:#7c3aed;--accent-glow:rgba(79,70,229,0.15);--accent-bg:rgba(79,70,229,0.06);--accent-bdr:rgba(79,70,229,0.25);--accent-text:#4f46e5;
+  --l0:#059669;--l0-bg:#d1fae5;--l0-bdr:#6ee7b7;--l0-t:#065f46;
+  --l1:#4f46e5;--l1-bg:#ede9fe;--l1-bdr:#c4b5fd;--l1-t:#3730a3;
+  --l2:#7c3aed;--l2-bg:#f5f3ff;--l2-bdr:#ddd6fe;--l2-t:#5b21b6;
+  --l3:#b45309;--l3-bg:#fef3c7;--l3-bdr:#fde68a;--l3-t:#78350f;
+  --l4:#b91c1c;--l4-bg:#fee2e2;--l4-bdr:#fecaca;--l4-t:#7f1d1d;
+  --green:#059669;--green-bg:#d1fae5;--green-bdr:#6ee7b7;--green-t:#065f46;
+  --amber:#b45309;--amber-bg:#fef3c7;--amber-bdr:#fde68a;--amber-t:#78350f;
+  --red:#b91c1c;--red-bg:#fee2e2;--red-bdr:#fecaca;--red-t:#7f1d1d;
+  --blue:#4f46e5;--blue-bg:#ede9fe;--blue-bdr:#c4b5fd;--blue-t:#3730a3;
+  --teal:#0d9488;--teal-bg:#ccfbf1;--teal-bdr:#99f6e4;--teal-t:#134e4a;
+  --pur:#7c3aed;--pur-bg:#f5f3ff;--pur-bdr:#ddd6fe;--pur-t:#5b21b6;
+  --shadow-xs:0 1px 2px rgba(0,0,0,.06);--shadow-sm:0 1px 4px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.05);
+  --shadow-md:0 4px 16px rgba(0,0,0,.10),0 2px 4px rgba(0,0,0,.06);--shadow-lg:0 12px 36px rgba(0,0,0,.14);
+  --card-bg:#fff;--card-open:rgba(79,70,229,0.05);--card-glow:0 0 0 2px rgba(79,70,229,.3),0 4px 20px rgba(79,70,229,.08);
+  --modal-overlay:rgba(15,23,42,0.55);--modal-bg:#fff;--modal-bdr:#e2e8f0;
+  --tb-bg:#fff;--search-bg:#f8fafc;
+  --tag-bg:#f1f5f9;--tag-c:#64748b;--tag-bdr:#e2e8f0;
+  --t-s-bg:#f0fdf4;--t-s-c:#166534;--t-s-bdr:#bbf7d0;
+  --t-i-bg:#eef2ff;--t-i-c:#3730a3;--t-i-bdr:#c7d2fe;
+  --t-w-bg:#fffbeb;--t-w-c:#92400e;--t-w-bdr:#fde68a;
+  --t-e-bg:#fef2f2;--t-e-c:#991b1b;--t-e-bdr:#fecaca;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--page);color:var(--text);font-size:16px;line-height:1.65;min-height:100vh;transition:background .3s,color .3s}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+.shell{display:grid;grid-template-columns:256px 1fr;min-height:100vh}
+.sidebar{background:var(--sb-bg);border-right:1px solid var(--sb-bdr);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sb-head{display:flex;align-items:center;gap:10px;padding:1.25rem 1.1rem 1rem;border-bottom:1px solid var(--sb-bdr)}
+.sb-logo{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;box-shadow:0 2px 10px var(--accent-glow)}
+.sb-title{font-weight:800;font-size:17px;color:#f1f5f9;letter-spacing:-.02em}
+.sb-version{font-size:10px;color:var(--sb-text);font-family:'Menlo','Consolas',monospace;margin-top:1px}
+.sb-theme-btn{margin-left:auto;width:30px;height:30px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;color:#94a3b8;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.sb-theme-btn:hover{background:rgba(255,255,255,.1);color:#f1f5f9}
+.sb-section{padding:.65rem .9rem;border-bottom:1px solid var(--sb-bdr)}
+.sb-label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--sb-text);padding:0 .3rem;margin-bottom:5px;opacity:.7}
+.nb{display:flex;align-items:center;gap:10px;padding:.44rem .7rem;border-radius:8px;border:none;background:transparent;color:var(--sb-text);cursor:pointer;font-family:inherit;font-size:15px;font-weight:500;width:100%;text-align:left;transition:background .12s,color .12s;position:relative}
+.nb:hover{background:var(--sb-hover);color:#c8d3e3}
+.nb.active{background:var(--sb-active);color:var(--sb-active-c)}
+.nb.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:2px;border-radius:99px;background:var(--sb-active-c)}
+.nb.active .nc{background:rgba(99,102,241,.2);color:var(--sb-active-c)}
+.nb-red{color:#f87171!important}
+.nb-red:hover{background:rgba(239,68,68,.08)!important;color:#fca5a5!important}
+.ndot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nc{margin-left:auto;font-size:10px;font-family:'Menlo','Consolas',monospace;font-weight:700;background:rgba(255,255,255,.06);color:var(--sb-text);padding:1px 6px;border-radius:99px}
+.save-pill{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;padding:.42rem .7rem;border-radius:8px;margin-bottom:4px}
+.save-pill.saved{background:rgba(16,185,129,.1);color:#34d399}
+.save-pill.saving{background:rgba(99,102,241,.1);color:#818cf8}
+.save-pill.unsaved{background:rgba(245,158,11,.1);color:#fbbf24}
+.save-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.dir-btn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;padding:.42rem .7rem;border-radius:8px;border:1px solid var(--sb-bdr);cursor:pointer;background:rgba(255,255,255,.03);color:var(--sb-text);transition:all .15s}
+.dir-btn:hover{border-color:rgba(255,255,255,.14);color:#c8d3e3}
+.dir-btn.linked{border-color:rgba(16,185,129,.3);color:#34d399;background:rgba(16,185,129,.07)}
+.sb-foot{margin-top:auto;padding:1rem 1.1rem;border-top:1px solid var(--sb-bdr);font-size:12px;color:var(--sb-text);line-height:1.8;opacity:.65}
+.main{padding:2rem 2.25rem;overflow-x:hidden;min-width:0}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:12px}
+.ph-eyebrow{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.ph-eyebrow::before{content:'';display:inline-block;width:16px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:1px}
+.ph-title{font-size:28px;font-weight:800;letter-spacing:-.04em;line-height:1.15;background:linear-gradient(135deg,var(--text) 0%,var(--muted) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+[data-theme="light"] .ph-title{background:linear-gradient(135deg,#0f172a 0%,#475569 100%);-webkit-background-clip:text;background-clip:text}
+.ph-sub{font-size:13px;color:var(--muted);margin-top:5px;font-family:'Menlo','Consolas',monospace}
+.ha{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.unsaved-banner{display:none;align-items:center;gap:10px;background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:12px;padding:.65rem 1rem;margin-bottom:1.5rem;font-size:15px;color:var(--amber-t);font-weight:600}
+.unsaved-banner.show{display:flex}
+.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:2rem}
+.sc{background:var(--surf1);border:1px solid var(--bdr);border-radius:16px;padding:1rem 1.1rem;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s;position:relative;overflow:hidden}
+[data-theme="dark"] .sc{background:var(--card-bg)}
+.sc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.03),transparent);border-radius:inherit;pointer-events:none}
+.sc:hover{border-color:var(--bdr3);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.sc.active{border-color:var(--accent);background:var(--accent-bg);box-shadow:var(--card-glow)}
+.sc.active::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:16px 16px 0 0}
+.sn{font-size:32px;font-weight:800;font-family:'Menlo','Consolas',monospace;line-height:1;color:var(--text)}
+.sc.active .sn{color:var(--accent-text)}
+.sl{font-size:13px;color:var(--muted);margin-top:7px;display:flex;align-items:center;gap:5px;font-weight:600}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.toolbar{display:flex;gap:6px;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;background:var(--tb-bg);border:1px solid var(--bdr);border-radius:14px;padding:.55rem .7rem;box-shadow:var(--shadow-sm);backdrop-filter:blur(12px)}
+.search-box{display:flex;align-items:center;gap:7px;background:var(--search-bg);border:1px solid var(--bdr);border-radius:9px;padding:6px 12px;margin-left:auto;transition:all .15s}
+.search-box:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.search-box input{background:transparent;border:none;outline:none;color:var(--text);font-family:inherit;font-size:15px;width:190px}
+.search-box input::placeholder{color:var(--muted)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;border:1px solid var(--bdr2);background:var(--surf2);color:var(--text2);cursor:pointer;font-family:inherit;font-size:15px;font-weight:600;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--surf3);border-color:var(--bdr3)}
+.btn.active{background:var(--accent-bg);border-color:var(--accent-bdr);color:var(--accent-text)}
+.btn-p{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-color:transparent;box-shadow:0 2px 12px var(--accent-glow)}
+.btn-p:hover{opacity:.9;box-shadow:0 4px 20px var(--accent-glow)}
+.btn-s{background:var(--green-bg);color:var(--green-t);border-color:var(--green-bdr)}
+[data-theme="dark"] .btn-s{color:var(--green-t)}
+.btn-s:hover{filter:brightness(1.1)}
+.btn-d{color:var(--red-t);border-color:transparent;background:transparent}
+.btn-d:hover{background:var(--red-bg);border-color:var(--red-bdr)}
+.btn-g{color:var(--muted);border-color:transparent;background:transparent}
+.btn-g:hover{background:var(--surf3);color:var(--text);border-color:var(--bdr)}
+.btn-sm{padding:5px 10px;font-size:12px;border-radius:7px}
+.badge{display:inline-flex;align-items:center;font-size:13px;padding:4px 12px;border-radius:99px;font-weight:700;white-space:nowrap;border:1px solid transparent;letter-spacing:.01em}
+.cards{display:flex;flex-direction:column;gap:8px}
+.card{background:var(--surf1);border:1px solid var(--bdr);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color .2s,box-shadow .2s,transform .15s;position:relative}
+[data-theme="dark"] .card{background:var(--card-bg)}
+.card::before{content:'';position:absolute;inset:0;background:linear-gradient(145deg,rgba(255,255,255,.025),transparent 50%);pointer-events:none;border-radius:inherit}
+.card:hover{border-color:var(--bdr3);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.card.open{border-color:var(--accent);box-shadow:var(--card-glow);transform:translateY(0)}
+.card.open::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.ch{display:flex;align-items:center;gap:13px;padding:1rem 1.2rem;cursor:pointer;user-select:none;transition:background .12s;position:relative;z-index:1}
+.ch:hover{background:rgba(255,255,255,.025)}
+[data-theme="light"] .ch:hover{background:rgba(0,0,0,.02)}
+.card.open .ch{background:var(--card-open)}
+.ci{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid transparent;position:relative}
+.ci::before{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);pointer-events:none}
+.cm{flex:1;min-width:0}
+.cid{font-size:15px;font-weight:700;font-family:'Menlo','Consolas',monospace;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cdesc{font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.cbadges{display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
+.chev{font-size:18px;color:var(--dim);transition:transform .25s,color .2s;flex-shrink:0;width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.card.open .chev{transform:rotate(90deg);color:var(--accent-text)}
+.cb{display:none;border-top:1px solid var(--bdr)}
+.card.open .cb{display:block}
+.pg{display:grid;grid-template-columns:1fr 1fr}
+.pp{padding:.85rem 1.2rem;border-right:1px solid var(--bdr);border-bottom:1px solid var(--bdr)}
+.pp:nth-child(even){border-right:none}
+.pp:last-child,.pp:nth-last-child(2):nth-child(odd){border-bottom:none}
+.pp.full{grid-column:1/-1;border-right:none}
+.ppt{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{font-size:13px;padding:4px 11px;border-radius:7px;font-family:'Menlo','Consolas',monospace;font-weight:600;border:1px solid var(--tag-bdr);background:var(--tag-bg);color:var(--tag-c)}
+.tbl{background:var(--blue-bg);color:var(--blue-t);border-color:var(--blue-bdr)}
+.ttl{background:var(--teal-bg);color:var(--teal-t);border-color:var(--teal-bdr)}
+.tpu{background:var(--pur-bg);color:var(--pur-t);border-color:var(--pur-bdr)}
+.tgr{background:var(--green-bg);color:var(--green-t);border-color:var(--green-bdr)}
+.tam{background:var(--amber-bg);color:var(--amber-t);border-color:var(--amber-bdr)}
+.trd{background:var(--red-bg);color:var(--red-t);border-color:var(--red-bdr)}
+.kv{display:flex;gap:10px;font-size:14px;margin-bottom:4px;align-items:baseline}
+.kvk{color:var(--muted);min-width:110px;flex-shrink:0;font-size:13px;font-weight:700;font-family:'Menlo','Consolas',monospace}
+.kvv{font-family:'Menlo','Consolas',monospace;font-size:13px;color:var(--text2);font-weight:600}
+.ep{font-size:13px;font-family:'Menlo','Consolas',monospace;font-weight:700;color:var(--accent-text);background:var(--accent-bg);padding:.5rem 1.2rem;border-top:1px solid var(--accent-bdr);display:flex;align-items:center;gap:6px}
+.ep::before{content:'⇌';opacity:.7}
+.ca{display:flex;gap:8px;padding:.7rem 1.2rem;border-top:1px solid var(--bdr);background:rgba(0,0,0,.15)}
+[data-theme="light"] .ca{background:rgba(0,0,0,.02)}
+.step-text{flex:1;line-height:1.5}
+/* FM/Recovery two-col inside card */
+.fm-pair{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.fm-item{border-radius:8px;padding:5px 9px;font-size:11px}
+.fm-item.fm{background:var(--red-bg);color:var(--red-t);border:1px solid var(--red-bdr)}
+.fm-item.rec{background:var(--green-bg);color:var(--green-t);border:1px solid var(--green-bdr)}
+/* IO grid */
+.io-2{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.io-box{border-radius:8px;padding:6px 9px;border:1px solid var(--bdr2);background:var(--surf2)}
+.io-box-lbl{font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.io-box-val{font-size:11px;color:var(--text2);line-height:1.5}
+/* Interfaces tags row */
+.iface-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.expbar{display:flex;gap:10px;align-items:center;margin-top:2rem;padding:1rem 1.2rem;border:1px solid var(--green-bdr);border-radius:14px;background:var(--green-bg);flex-wrap:wrap}
+.expbar-lbl{font-size:13px;color:var(--green-t);font-weight:700;flex:1}
+.toast-wrap{position:fixed;bottom:1.5rem;right:1.5rem;display:flex;flex-direction:column;gap:8px;z-index:9999;pointer-events:none}
+.toast{font-size:13px;font-weight:600;padding:.65rem 1.1rem;border-radius:11px;display:none;align-items:center;gap:8px;border:1px solid transparent;box-shadow:var(--shadow-md);pointer-events:none;backdrop-filter:blur(8px)}
+.toast.show{display:flex}
+.t-s{background:var(--t-s-bg);color:var(--t-s-c);border-color:var(--t-s-bdr)}
+.t-i{background:var(--t-i-bg);color:var(--t-i-c);border-color:var(--t-i-bdr)}
+.t-w{background:var(--t-w-bg);color:var(--t-w-c);border-color:var(--t-w-bdr)}
+.t-e{background:var(--t-e-bg);color:var(--t-e-c);border-color:var(--t-e-bdr)}
+.mo{display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(8px);z-index:200;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto}
+.mo.show{display:flex}
+.md{background:var(--modal-bg);border:1px solid var(--modal-bdr);border-radius:20px;padding:1.75rem;width:100%;max-width:640px;margin:auto;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.md::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2),transparent)}
+.md h3{font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.02em;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:space-between}
+.fl{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;margin-top:.9rem}
+.fi,.fs,.ft{width:100%;background:var(--surf2);border:1px solid var(--bdr2);border-radius:9px;padding:10px 14px;color:var(--text);font-size:15px;font-family:inherit;outline:none;transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none}
+.fi:focus,.fs:focus,.ft:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow);background:var(--surf3)}
+.ft{resize:vertical;min-height:70px;font-family:'Menlo','Consolas',monospace;font-size:14px;line-height:1.65}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fhint{font-size:13px;color:var(--dim);margin-top:7px;line-height:1.6}
+.sdiv{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-text);border-bottom:1px solid var(--bdr);padding-bottom:6px;margin-top:1.4rem;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+.sdiv::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--accent-bdr),transparent)}
+.mf{display:flex;gap:10px;justify-content:flex-end;margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--bdr)}
+.del-mo{display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(10px);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.del-mo.show{display:flex}
+.del-box{background:var(--modal-bg);border:1px solid var(--red-bdr);border-radius:20px;padding:2rem;width:100%;max-width:440px;text-align:center;box-shadow:0 0 0 1px var(--red-bdr),var(--shadow-lg);position:relative;overflow:hidden}
+.del-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),transparent)}
+.del-icon{font-size:44px;margin-bottom:1rem;display:block}
+.del-title{font-size:20px;font-weight:800;color:var(--red-t);margin-bottom:.5rem;letter-spacing:-.02em}
+.del-msg{font-size:15px;color:var(--muted);margin-bottom:.5rem;line-height:1.65;font-weight:500}
+.del-id{font-size:14px;font-family:'Menlo','Consolas',monospace;font-weight:700;color:var(--text);background:var(--surf3);border:1px solid var(--bdr2);padding:6px 14px;border-radius:8px;display:inline-block;margin:.6rem 0 1.5rem;word-break:break-all}
+.del-deps{font-size:14px;color:var(--amber-t);background:var(--amber-bg);border:1px solid var(--amber-bdr);border-radius:10px;padding:.65rem .9rem;margin-bottom:1.25rem;text-align:left;display:none;font-weight:600;line-height:1.65}
+.del-deps.show{display:block}
+.del-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-del{background:var(--red);color:#fff;border-color:transparent;padding:9px 22px;font-size:13px;font-weight:700;box-shadow:0 2px 12px rgba(239,68,68,.35)}
+.btn-del:hover{filter:brightness(1.1)}
+/* ── Section groups (L0 / L1) ── */
+.sec-group{margin-bottom:1.75rem}
+.sec-group:last-child{margin-bottom:0}
+.sec-header{display:flex;align-items:center;gap:10px;padding:.5rem .2rem .65rem;margin-bottom:8px;border-bottom:1px solid var(--bdr2);position:sticky;top:0;z-index:10;background:var(--page)}
+.sec-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;border:1px solid transparent}
+.sec-title{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.sec-sub{font-size:13px;color:var(--muted);margin-top:1px}
+.sec-count{margin-left:auto;font-size:12px;font-family:'Menlo','Consolas',monospace;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--surf3);color:var(--muted);border:1px solid var(--bdr2);white-space:nowrap}
+.sec-add{font-size:13px;font-weight:600;padding:4px 10px;border-radius:7px;border:1px solid var(--bdr2);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap}
+.sec-add:hover{background:var(--accent-bg);border-color:var(--accent-bdr);color:var(--accent-text)}
+.sec-cards{display:flex;flex-direction:column;gap:8px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr3);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+@media(max-width:768px){.shell{grid-template-columns:1fr}.sidebar{display:none}.main{padding:1.25rem}.pg,.fr{grid-template-columns:1fr}.pp{border-right:none!important}.pp:nth-child(n+2){border-top:1px solid var(--bdr)!important}.cbadges .badge:not(:first-child){display:none}}
+@media(max-width:540px){.sg{grid-template-columns:repeat(3,1fr)}.ph-title{font-size:22px}.search-box input{width:130px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="sb-head">
+    <div class="sb-logo">🤖</div>
+    <div><div class="sb-title">SkillReg</div><div class="sb-version">v3.0.0</div></div>
+    <button class="sb-theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light / dark">🌙</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Storage</div>
+    <div class="save-pill saved" id="saveStatus"><span class="save-dot"></span><span id="saveStatusText">All changes saved</span></div>
+    <div class="dir-btn" id="authBtn" onclick="toggleAuth()" title="Sign in with Google to add, edit or delete skills">🔒 <span id="authBtnText">Sign in with Google to edit</span></div>
+    <div class="dir-btn" id="dirStatus" onclick="pickDirectory()" title="Link a folder — files auto-write on every change">📁 <span id="dirStatusText">Link folder for auto-save</span></div>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Levels</div>
+    <button class="nb active" id="nav-all" onclick="nf('all',this)"><span class="ndot" style="background:#64748b"></span>All skills<span class="nc" id="nc-all">0</span></button>
+    <button class="nb" id="nav-resource" onclick="nf('resource',this)"><span class="ndot" style="background:#10b981"></span>L0 · Resources<span class="nc" id="nc-resource">0</span></button>
+    <button class="nb" id="nav-elementary" onclick="nf('elementary',this)"><span class="ndot" style="background:#6366f1"></span>L1 · Elementary<span class="nc" id="nc-elementary">0</span></button>
+    <button class="nb" id="nav-basic" onclick="nf('basic',this)"><span class="ndot" style="background:#a855f7"></span>L2 · Basic Skills<span class="nc" id="nc-basic">0</span></button>
+    <button class="nb" id="nav-composite" onclick="nf('composite',this)"><span class="ndot" style="background:#f59e0b"></span>L3 · Composite<span class="nc" id="nc-composite">0</span></button>
+    <button class="nb" id="nav-task" onclick="nf('task',this)"><span class="ndot" style="background:#ef4444"></span>L4 · Task Plans<span class="nc" id="nc-task">0</span></button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Actions</div>
+    <button class="nb" onclick="openAdd()">＋ &nbsp;Add skill</button>
+    <button class="nb" onclick="triggerImport()">↑ &nbsp;Import YAML / JSON</button>
+    <button class="nb" onclick="exp('yaml')">↓ &nbsp;Download YAML</button>
+    <button class="nb" onclick="exp('json')">↓ &nbsp;Download JSON</button>
+    <button class="nb nb-red" onclick="resetToDefaults()">↺ &nbsp;Reset to defaults</button>
+  </div>
+  <div class="sb-foot">Shared registry — changes sync live to everyone.<br>Link a folder to also write YAML &amp; JSON on every change.</div>
+</aside>
+
+<main class="main">
+  <input type="file" id="importInput" accept=".yaml,.yml,.json" style="display:none" onchange="handleImportFile(this)">
+  <div class="unsaved-banner" id="unsavedBanner"></div>
+  <div class="ph">
+    <div class="ph-left">
+      <div class="ph-eyebrow">Robot Capability Model</div>
+      <div class="ph-title">Skill Registry</div>
+      <div class="ph-sub">5-level hierarchy · live shared registry · v3.0.0</div>
+    </div>
+    <div class="ha">
+      <button class="btn" onclick="triggerImport()" title="Import YAML or JSON file">↑ Import</button>
+      <button class="btn btn-s" onclick="exp('yaml')">↓ YAML</button>
+      <button class="btn btn-s" onclick="exp('json')">↓ JSON</button>
+      <button class="btn btn-p" onclick="openAdd()">＋ Add skill</button>
+    </div>
+  </div>
+  <div class="sg" id="sg"></div>
+  <div class="toolbar">
+    <button class="btn active" id="fb-all" onclick="tf('all',this)">All</button>
+    <button class="btn" id="fb-resource" onclick="tf('resource',this)">L0 Resource</button>
+    <button class="btn" id="fb-elementary" onclick="tf('elementary',this)">L1 Elementary</button>
+    <button class="btn" id="fb-basic" onclick="tf('basic',this)">L2 Basic</button>
+    <button class="btn" id="fb-composite" onclick="tf('composite',this)">L3 Composite</button>
+    <button class="btn" id="fb-task" onclick="tf('task',this)">L4 Task plan</button>
+    <div class="search-box">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:var(--muted);flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search skills…" oninput="doSearch(this.value)">
+    </div>
+  </div>
+  <div class="cards" id="cw"></div>
+  <div class="expbar">
+    <span class="expbar-lbl">📦 Download registry snapshot</span>
+    <button class="btn btn-s" onclick="exp('yaml')">↓ Download YAML</button>
+    <button class="btn btn-s" onclick="exp('json')">↓ Download JSON</button>
+  </div>
+</main>
+</div>
+
+<div class="toast-wrap">
+  <div class="toast t-s" id="t-saved">✓ Saved</div>
+  <div class="toast t-i" id="t-live"></div>
+  <div class="toast t-s" id="t-filesaved">✓ Files written to folder</div>
+  <div class="toast t-s" id="t-imported">✓ Registry imported!</div>
+  <div class="toast t-i" id="t-dl">✓ Downloaded!</div>
+  <div class="toast t-w" id="t-warn"></div>
+  <div class="toast t-e" id="t-err"></div>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="mo" id="mo" onclick="bgClose(event)">
+<div class="md">
+  <h3><span id="mt">Add skill</span><button class="btn btn-g btn-sm" onclick="closeMod()" style="font-size:15px;padding:4px 9px">✕</button></h3>
+  <div class="fr">
+    <div><label class="fl">Skill ID *</label><input class="fi" id="fId" placeholder="e.g. R-001 or S-201"></div>
+    <div><label class="fl">Level *</label>
+      <select class="fs" id="fLvl" onchange="updateSectionOptions()">
+        <option value="resource">L0 · Resource</option>
+        <option value="elementary">L1 · Elementary</option>
+        <option value="basic">L2 · Basic Skill</option>
+        <option value="composite" selected>L3 · Composite</option>
+        <option value="task">L4 · Task Plan</option>
+      </select>
+    </div>
+  </div>
+  <div class="fr" id="fSectionRow" style="display:none">
+    <div><label class="fl">Section</label>
+      <select class="fs" id="fSection"></select>
+    </div>
+    <div><label class="fl">Or type a new section</label>
+      <input class="fi" id="fSectionCustom" placeholder="e.g. Lighting">
+    </div>
+  </div>
+  <label class="fl">Description *</label>
+  <input class="fi" id="fDesc" placeholder="What does this skill do?">
+  <div class="sdiv">Resources</div>
+  <div class="fr">
+    <div><label class="fl">Robot / platform</label><input class="fi" id="fRobot" placeholder="e.g. KUKA KR10 / MAiRA_L"></div>
+    <div><label class="fl">Tools (comma-sep)</label><input class="fi" id="fTools" placeholder="e.g. brush, gripper, extraction"></div>
+  </div>
+  <div class="fr">
+    <div><label class="fl">Sensors (comma-sep)</label><input class="fi" id="fSensors" placeholder="e.g. camera, force_torque"></div>
+    <div><label class="fl">Interface</label><input class="fi" id="fIface" placeholder="e.g. EtherCAT / ROS2"></div>
+  </div>
+  <div class="sdiv">Inputs &amp; Parameters</div>
+  <label class="fl">Inputs (key: type — one per line)</label>
+  <textarea class="ft" id="fInputs" placeholder="target_pose: Pose&#10;force_threshold_N: float&#10;brush_rpm: int"></textarea>
+  <div class="sdiv">Conditions</div>
+  <label class="fl">Preconditions (one per line)</label>
+  <textarea class="ft" id="fPre" placeholder="tool_mounted == true&#10;F/T zeroed"></textarea>
+  <div class="fr">
+    <div><label class="fl">Effects</label><textarea class="ft" id="fEff" placeholder="contact_established&#10;surface_clean"></textarea></div>
+    <div><label class="fl">Success criteria</label><textarea class="ft" id="fSucc" placeholder="Fz in target range&#10;quality_score > threshold"></textarea></div>
+  </div>
+  <div class="sdiv">Reliability</div>
+  <div class="fr">
+    <div><label class="fl">Failure modes</label><textarea class="ft" id="fFail" placeholder="force_overload&#10;surface_not_found"></textarea></div>
+    <div><label class="fl">Recovery strategies</label><textarea class="ft" id="fRec" placeholder="retract_and_retry&#10;abort_to_safe_pose"></textarea></div>
+  </div>
+  <div class="sdiv">Execution</div>
+  <label class="fl">Calls / sub-skills (comma-sep)</label>
+  <input class="fi" id="fCalls" placeholder="S-201, S-203, M-102">
+  <div class="fr">
+    <div><label class="fl">Endpoint</label><input class="fi" id="fEp" placeholder="/skills/…/execute"></div>
+    <div><label class="fl">Status</label>
+      <select class="fs" id="fStat">
+        <option>ready</option><option>verified</option><option>active</option><option>draft</option><option>deprecated</option>
+      </select>
+    </div>
+  </div>
+  <div class="fhint">* Required. Textareas: one item per line. Comma fields: separate with commas.</div>
+  <div class="mf">
+    <button class="btn btn-g" onclick="closeMod()">Cancel</button>
+    <button class="btn btn-p" onclick="saveSkill()">✓ Save skill</button>
+  </div>
+</div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="del-mo" id="delMo">
+<div class="del-box">
+  <span class="del-icon">🗑️</span>
+  <div class="del-title">Delete this skill?</div>
+  <div class="del-msg">This will permanently remove the skill from the registry.<br>This action cannot be undone.</div>
+  <div class="del-id" id="delSkillId"></div>
+  <div class="del-deps" id="delDeps"></div>
+  <div class="del-actions">
+    <button class="btn" onclick="closeDelMo()" style="min-width:130px">Cancel — keep it</button>
+    <button class="btn btn-del" onclick="confirmDelete()">Yes, delete</button>
+  </div>
+</div>
+</div>
+
+<script>
+/* ── Theme ──────────────────────────────── */
+const THEME_KEY='srTheme';
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('themeBtn').textContent=t==='dark'?'☀️':'🌙';try{localStorage.setItem(THEME_KEY,t)}catch(e){}}
+function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')}
+(function(){let t='dark';try{t=localStorage.getItem(THEME_KEY)||'dark'}catch(e){}applyTheme(t)})();
+
+/* ── Level/Status meta ── */
+const LV={resource:{lbl:'L0 · Resource',ico:'🔧',lk:'l0'},elementary:{lbl:'L1 · Elementary',ico:'⚡',lk:'l1'},basic:{lbl:'L2 · Basic',ico:'⚙',lk:'l2'},composite:{lbl:'L3 · Composite',ico:'🔄',lk:'l3'},task:{lbl:'L4 · Task plan',ico:'📋',lk:'l4'}};
+const ST={ready:['var(--surf3)','var(--muted)','var(--bdr2)'],verified:['var(--green-bg)','var(--green-t)','var(--green-bdr)'],active:['var(--blue-bg)','var(--blue-t)','var(--blue-bdr)'],draft:['var(--amber-bg)','var(--amber-t)','var(--amber-bdr)'],deprecated:['var(--red-bg)','var(--red-t)','var(--red-bdr)']};
+function lvb(l){const v=LV[l]||LV.resource;return`<span class="badge" style="background:var(--${v.lk}-bg);color:var(--${v.lk}-t);border-color:var(--${v.lk}-bdr)">${v.lbl}</span>`}
+function stb(s){const[bg,c,b]=ST[s]||ST.ready;return`<span class="badge" style="background:${bg};color:${c};border-color:${b}">${esc(s||'ready')}</span>`}
+function tg(arr,c){return(arr||[]).map(t=>`<span class="tag ${c||''}">${esc(t)}</span>`).join('')}
+/* Escape user-entered text before it goes into innerHTML — the registry is shared, so anyone's input reaches everyone's browser */
+function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+
+/* ── Default seed data ── */
+const DEFAULT_SKILLS=[
+  // ── L0 RESOURCES ──
+  {id:'R-001',section:'Robot',level:'resource',desc:'KUKA KR 10 R1100-2 — 6-axis robot arm, primary manipulation resource',robot:'KUKA KR10 R1100-2',tools:['tool_changer'],sensors:['force_torque'],iface:'EtherCAT / KRC4',inputs:{'payload_kg':'10','reach_mm':'1100','DOF':'6','repeatability_mm':'0.03','IP_class':'IP54','mounting':'floor/ceiling'},pre:['robot_referenced==true','controller_on'],eff:['motion_enabled'],succ:['pose_reached'],fail:['joint_limit_reached','comm_loss'],rec:['reinitialize','abort_to_safe_pose'],calls:[],ep:'/resources/robot/KUKA_KR10',status:'active'},
+  {id:'R-002',section:'Gantry',level:'resource',desc:'Gantry System — 3-axis linear XYZ positioning structure',robot:'Gantry_XYZ',tools:[],sensors:['linear_encoder'],iface:'EtherCAT / Profinet',inputs:{'travel_X_mm':'2000','travel_Y_mm':'1500','travel_Z_mm':'600','max_speed_mms':'500','positioning_acc_mm':'0.05','drive':'Servo + linear encoder'},pre:['homed==true','e_stop_clear'],eff:['gantry_positioned'],succ:['in_position_flag==1'],fail:['limit_switch_hit','encoder_error'],rec:['re_home','check_drive'],calls:[],ep:'/resources/gantry',status:'active'},
+  {id:'R-003',section:'Camera',level:'resource',desc:'Intel RealSense D435 — RGB-D wrist-mounted camera',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'USB 3.1 Gen1',inputs:{'RGB_res':'1920×1080 px','depth_res':'1280×720 px','frame_rate_rgb':'60 fps','frame_rate_depth':'30 fps','depth_range':'0.1–10 m','FOV':'86°×57°','mount':'wrist-mounted, calibrated'},pre:['camera_powered==true','calibration_valid'],eff:['image_stream_available'],succ:['frame_quality>threshold'],fail:['camera_not_found','underexposed'],rec:['reconnect','adjust_exposure'],calls:[],ep:'/resources/camera/realsense_D435',status:'active'},
+  {id:'R-004',section:'F/T Sensor',level:'resource',desc:'ATI Mini45 — 6-axis wrist F/T sensor between flange and tool changer',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'EtherCAT',inputs:{'force_range_FxFy_N':'±145','force_range_Fz_N':'±290','torque_range_Nm':'±20','resolution':'1/80 N · 1/2000 Nm','sample_rate_Hz':'7000','mount':'between flange and tool changer'},pre:['sensor_initialized==true'],eff:['FT_data_available'],succ:['within_nominal_range'],fail:['sensor_overload','comm_loss'],rec:['zero_sensor','reinitialize_driver'],calls:[],ep:'/resources/sensor/ATI_Mini45',status:'active'},
+  {id:'R-005',section:'Gripper',level:'resource',desc:'Schunk EGN 80 — electric servo gripper, tool changer port A',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'Profinet I/O',inputs:{'stroke_per_jaw_mm':'40','gripping_force_N':'75–425','drive':'electric servo','fingers':'interchangeable','port':'tool_changer_A'},pre:['tool_changer_locked==true'],eff:['gripper_ready'],succ:['grasp_force_in_range'],fail:['jaw_stall','comm_loss'],rec:['reopen_close','replace_fingers'],calls:[],ep:'/resources/gripper/Schunk_EGN80',status:'active'},
+  {id:'R-006',section:'Brush',level:'resource',desc:'Rotary Brush Tool — DC motor, 0–1500 RPM, PWM speed control, port B',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'PWM / Digital I/O',inputs:{'bristle_material':'Nylon 0.2mm / horsehair','head_width_mm':'60','max_rpm':'1500','drive':'DC motor 24V 50W','speed_control':'PWM digital output','port':'tool_changer_B'},pre:['tool_mounted_and_locked==true','extraction_ready'],eff:['brush_running'],succ:['RPM_in_range'],fail:['motor_stall','overcurrent'],rec:['reduce_force','check_bristles'],calls:[],ep:'/resources/tool/brush',status:'ready'},
+  {id:'R-007',section:'Extraction',level:'resource',desc:'Industrial Vacuum Extraction — HEPA H13, 2000 Pa, controlled via DO-03',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'Digital I/O DO-03',inputs:{'type':'Industrial vacuum HEPA','suction_power_Pa':'2000','flow_lpm':'80','nozzle_dia_mm':'32','filter_class':'H13','control':'Digital output DO-03'},pre:['unit_powered==true'],eff:['vacuum_active'],succ:['DO-03==1, DI_feedback_ok'],fail:['filter_clogged','power_loss'],rec:['check_filter','restart_unit'],calls:[],ep:'/resources/extraction',status:'active'},
+  {id:'R-008',section:'Tool Changer',level:'resource',desc:'Schunk SWK Tool Changer — 3 ports (A gripper, B brush, C spare), <3s change time',robot:'KUKA KR10 R1100-2',tools:[],sensors:['inductive_lock_sense'],iface:'Digital I/O 24V',inputs:{'ports':'A(gripper), B(brush), C(spare)','max_payload_per_port_kg':'10','change_time_s':'<3','lock_sense':'inductive DO-01/DO-02'},pre:['robot_at_change_station'],eff:['tool_mounted_and_locked'],succ:['DI_lock_confirmed'],fail:['lock_timeout','tool_not_seated'],rec:['retry_lock','manual_inspection'],calls:[],ep:'/resources/tool_changer/Schunk_SWK',status:'active'},
+  {id:'R-009',section:'Work Carrier',level:'resource',desc:'Battery Holder / Work Carrier — pneumatic 3-point clamp, prismatic cell format',robot:'KUKA KR10 R1100-2',tools:[],sensors:['inductive_position'],iface:'Digital I/O DI-01/DI-02',inputs:{'format':'Prismatic cell 200×80×60mm','fixture':'pneumatic clamp 3-point','position_sense':'2x inductive DI-01 DI-02','reference_frame':'World W0','max_weight_kg':'5'},pre:['component_placed'],eff:['component_clamped_and_referenced'],succ:['DI-01==1, DI-02==1'],fail:['clamp_fail','component_misaligned'],rec:['re_clamp','re_check_position'],calls:[],ep:'/resources/battery_holder',status:'active'},
+  // ── L1 ELEMENTARY ──
+  {id:'M-101',section:'Robot Motion',level:'elementary',desc:'PTP move — joint-space point-to-point motion to target configuration',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'EtherCAT / KRC4',inputs:{'target_joints':'float[6] — J1..J6','velocity_override_pct':'1–100','accel_override_pct':'1–100','blend_radius_mm':'0–50 (C_DIS)'},pre:['robot_referenced==true','no_collision_detected'],eff:['robot at target_joints'],succ:['joint_error<0.01 rad'],fail:['joint_limit','self_collision','timeout'],rec:['replan','abort_to_safe_pose'],calls:['R-001'],ep:'/skills/motion/ptp_move/execute',status:'verified'},
+  {id:'M-102',section:'Robot Motion',level:'elementary',desc:'LIN move — linear Cartesian movement from current to target pose',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'EtherCAT / KRC4',inputs:{'target_pose':'Cartesian {X,Y,Z,A,B,C}','speed_mms':'1–2000','orientation_control':'wrist/tool/none','blend_radius_mm':'0–50'},pre:['robot_referenced==true','path_clear'],eff:['robot at target_pose'],succ:['position_error<0.5mm'],fail:['path_blocked','singularity'],rec:['replan_path','reduce_speed'],calls:['R-001'],ep:'/skills/motion/lin_move/execute',status:'verified'},
+  {id:'M-103',section:'Robot Motion',level:'elementary',desc:'Spline move — smooth multi-waypoint Cartesian trajectory with path tolerance control',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'EtherCAT / KRC4',inputs:{'waypoints':'List[Pose]','path_tolerance_mm':'0.1–5','speed_profile':'constant/trapezoidal'},pre:['robot_referenced==true'],eff:['path_executed'],succ:['deviation_log within tolerance'],fail:['singularity_proximity','timeout'],rec:['replan','pause_and_replan'],calls:['R-001'],ep:'/skills/motion/spline_move/execute',status:'verified'},
+  {id:'M-104',section:'Robot Motion',level:'elementary',desc:'Move to pose — navigate to a named pose from the pose database (auto-selects PTP/LIN)',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'EtherCAT / KRC4',inputs:{'pose_name':'string (from pose DB)','motion_type':'auto/PTP/LIN','speed_pct':'1–100'},pre:['pose_exists_in_DB','robot_referenced'],eff:['robot at named pose'],succ:['at_pose_flag==true'],fail:['pose_not_found','unreachable'],rec:['check_pose_DB','replan'],calls:['R-001'],ep:'/skills/motion/move_to_pose/execute',status:'ready'},
+  {id:'M-105',section:'Robot Motion',level:'elementary',desc:'Set speed override — global or motion-local speed override for robot or gantry',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'EtherCAT / KRC4',inputs:{'override_pct':'0–100','scope':'global/motion-local','target':'robot/gantry'},pre:[],eff:['speed_override_applied'],succ:['acknowledged==true'],fail:['value_out_of_range'],rec:['clamp_to_valid_range'],calls:['R-001','R-002'],ep:'/skills/motion/set_speed/execute',status:'verified'},
+  {id:'C-101',section:'Camera',level:'elementary',desc:'Take image — capture RGB, Depth, or RGB-D frame from wrist camera',robot:'KUKA KR10 R1100-2',tools:[],sensors:['camera'],iface:'USB 3.1 Gen1',inputs:{'mode':'RGB/Depth/RGB-D','resolution':'Full/Half/Quarter','exposure':'auto/manual_ms','gain':'1–16'},pre:['camera_initialized==true','lighting_ok'],eff:['image_frame_available'],succ:['image_quality>threshold'],fail:['camera_not_responding','underexposed'],rec:['retry_capture','adjust_exposure'],calls:['R-003'],ep:'/skills/perception/take_image/execute',status:'ready'},
+  {id:'F-101',section:'F/T Sensor',level:'elementary',desc:'Read F/T data — stream force/torque values from ATI Mini45 at configurable rate',robot:'KUKA KR10 R1100-2',tools:[],sensors:['force_torque'],iface:'EtherCAT',inputs:{'sample_rate_Hz':'100–7000','filter_cutoff_Hz':'low-pass cutoff'},pre:['sensor_initialized==true'],eff:['FT_values_available'],succ:['read_success'],fail:['sensor_timeout','data_invalid'],rec:['reinitialize_driver'],calls:['R-004'],ep:'/skills/io/read_ft_data/execute',status:'active'},
+  {id:'F-102',section:'F/T Sensor',level:'elementary',desc:'Monitor force limit — watch F/T axes and trigger action on threshold breach',robot:'KUKA KR10 R1100-2',tools:[],sensors:['force_torque'],iface:'EtherCAT',inputs:{'force_threshold_N':'F_max per axis','torque_threshold_Nm':'T_max per axis','action_on_breach':'stop/retract/alarm'},pre:['F-101 active'],eff:['limit_breach_detected'],succ:['no breach during window'],fail:['force_exceeded','torque_exceeded'],rec:['immediate_stop','retract_to_safe'],calls:['R-004'],ep:'/skills/io/monitor_force_limit/execute',status:'verified'},
+  {id:'T-101',section:'Tool & I/O',level:'elementary',desc:'Start / stop tool — control brush rotation or extraction via PWM/digital output',robot:'KUKA KR10 R1100-2',tools:['brush','extraction'],sensors:[],iface:'PWM / Digital I/O',inputs:{'command':'START/STOP/PAUSE','speed_rpm':'0–1500 (brush only)'},pre:['tool_mounted==true','DO_channel_ready'],eff:['tool_running or stopped'],succ:['running_flag + actual_RPM confirmed'],fail:['motor_stall','DO_not_set'],rec:['reduce_force','check_DO'],calls:['R-006','R-007'],ep:'/skills/io/start_stop_tool/execute',status:'ready'},
+  {id:'T-102',section:'Tool & I/O',level:'elementary',desc:'Set digital output — write 0/1/PWM to any DO channel (tool changer, extraction, lighting)',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'Digital I/O 24V',inputs:{'channel':'DO-01…DO-08','value':'0/1/PWM_duty'},pre:['DO_channel_configured'],eff:['digital_output_set'],succ:['acknowledged + DI_readback'],fail:['channel_not_found','hardware_fault'],rec:['retry','check_wiring'],calls:['R-001','R-008'],ep:'/skills/io/set_digital_output/execute',status:'verified'},
+  {id:'G-101',section:'Gantry',level:'elementary',desc:'Gantry linear move — position gantry XYZ axes in gantry frame',robot:'Gantry_XYZ',tools:[],sensors:['linear_encoder'],iface:'EtherCAT / Profinet',inputs:{'target_X_mm':'gantry frame','target_Y_mm':'gantry frame','target_Z_mm':'gantry frame','speed_mms':'10–500','accel_mms2':'50–2000'},pre:['gantry_homed==true'],eff:['gantry at target position'],succ:['in_position_flag==1 + encoder_pos logged'],fail:['limit_switch','drive_fault'],rec:['re_home','check_drive'],calls:['R-002'],ep:'/skills/motion/gantry_move/execute',status:'verified'},
+  // ── L2 BASIC SKILLS ──
+  {id:'S-201',level:'basic',desc:'Establish contact — force-controlled approach until tool contacts surface within threshold',robot:'KUKA KR10 R1100-2',tools:['active_tool'],sensors:['force_torque'],iface:'EtherCAT / ROS2',inputs:{'approach_direction':'vector3','force_threshold_N':'F_contact','approach_speed_mms':'approach speed','max_approach_dist_mm':'max travel'},pre:['tool_mounted==true','F/T zeroed','path_clear'],eff:['contact_established'],succ:['Fz ∈ [F_min, F_max], contact_pose_recorded'],fail:['surface_not_found after max dist','force_exceeded'],rec:['retract → re-scan ROI → retry×3','immediate_stop + alarm'],calls:['M-102','F-101','F-102','M-105'],ep:'/skills/manipulation/establish_contact/execute',status:'verified'},
+  {id:'S-202',level:'basic',desc:'Follow force-controlled surface — maintain constant normal force via impedance control along path',robot:'KUKA KR10 R1100-2',tools:['active_tool'],sensors:['force_torque'],iface:'EtherCAT / ROS2',inputs:{'path_waypoints':'List[Pose]','F_normal_N':'target normal force','stiffness_K':'impedance stiffness'},pre:['contact_established (S-201)','speed_set'],eff:['path_followed_under_force_control'],succ:['path_deviation<0.5mm, F ±10% target'],fail:['force_loss (surface gap)','singularity_proximity'],rec:['re-establish contact S-201','pause + replan path'],calls:['M-103','F-101','F-102'],ep:'/skills/manipulation/follow_surface/execute',status:'ready'},
+  {id:'S-203',level:'basic',desc:'Scan ROI — move camera over bounding box, capture multi-frame set, stitch and return annotated map',robot:'KUKA KR10 R1100-2',tools:[],sensors:['camera'],iface:'USB3 / EtherCAT',inputs:{'ROI_bounding_box_mm':'region bounds','overlap_pct':'frame overlap','resolution_mode':'Full/Half/Quarter'},pre:['camera_calibrated','lighting_on'],eff:['stitched_image + defect_map + dirt_mask available'],succ:['coverage≥98%, all_frames_valid'],fail:['blurry_frame (vibration)','coverage_gap'],rec:['retake frame reduce speed','insert extra waypoint'],calls:['M-101','C-101','G-101'],ep:'/skills/perception/scan_roi/execute',status:'ready'},
+  {id:'S-204',level:'basic',desc:'Calibrate tool — run TCP calibration routine, update tool frame, zero F/T offset',robot:'KUKA KR10 R1100-2',tools:['active_tool'],sensors:['camera','force_torque'],iface:'EtherCAT',inputs:{'tool_id':'string','calibration_poses':'int — number of reference poses'},pre:['tool_mounted_and_locked (R-008)'],eff:['TCP_calibrated, F/T_zero_offset_applied'],succ:['TCP_error<0.1mm'],fail:['reference_geometry_not_found','calibration_diverged'],rec:['reset_TCP','retry_calibration'],calls:['M-101','F-101','T-102'],ep:'/skills/tool/calibrate_tool/execute',status:'verified'},
+  {id:'S-205',level:'basic',desc:'Correct gripping pose — use vision to compute pose correction and move robot to adjusted pre-grasp',robot:'KUKA KR10 R1100-2',tools:[],sensors:['camera'],iface:'USB3',inputs:{'nominal_grasp_pose':'Pose','camera_image':'image frame'},pre:['camera_calibrated','component_in_holder (R-009)'],eff:['corrected_pose_computed, robot_at_corrected_pose'],succ:['position_error<0.5mm'],fail:['correction>5mm — out of range'],rec:['halt + operator_alert'],calls:['C-101','M-102'],ep:'/skills/manipulation/correct_grasp_pose/execute',status:'ready'},
+  {id:'S-206',level:'basic',desc:'Execute brush path — run brush over trajectory with active force control + simultaneous extraction',robot:'KUKA KR10 R1100-2',tools:['brush','extraction'],sensors:['force_torque'],iface:'EtherCAT / PWM',inputs:{'path_waypoints':'List[Pose]','F_normal_N':'normal contact force','brush_rpm':'0–1500','feed_speed_mms':'path speed'},pre:['brush_mounted (R-006)','extraction_on (S-207)','contact_made (S-201)'],eff:['path_cleaned, F_profile_logged, RPM_logged'],succ:['full_path_covered, no_force_violation'],fail:['brush_stall (RPM drop)','force_overload'],rec:['reduce_force re-engage','stop retract alarm'],calls:['M-103','T-101','F-102','F-101'],ep:'/skills/surface_cleaning/execute_brush_path/execute',status:'ready'},
+  {id:'S-207',level:'basic',desc:'Activate extraction — start/stop vacuum and verify suction via digital feedback',robot:'KUKA KR10 R1100-2',tools:['extraction'],sensors:[],iface:'Digital I/O DO-03',inputs:{'command':'ON/OFF','nozzle_pose':'Pose'},pre:['extraction_unit_powered (R-007)'],eff:['vacuum_active or stopped'],succ:['DO-03==1, DI_feedback_confirmed'],fail:['suction_not_confirmed','power_loss'],rec:['check_DO-03 / hardware'],calls:['T-101','T-102'],ep:'/skills/io/activate_extraction/execute',status:'active'},
+  {id:'S-208',level:'basic',desc:'Check quality — capture post-process image, run defect classifier, compare to pre-scan baseline',robot:'KUKA KR10 R1100-2',tools:[],sensors:['camera'],iface:'USB3',inputs:{'ROI':'surface_region','pre_scan_reference':'image','quality_threshold':'float 0–1'},pre:['camera_calibrated','lighting_stable'],eff:['quality_score_computed, PASS/FAIL_flag set'],succ:['score>threshold → PASS'],fail:['score≤threshold','lighting_insufficient'],rec:['trigger_repeat_processing (CS-304)'],calls:['C-101','G-101'],ep:'/skills/surface_inspection/check_quality/execute',status:'verified'},
+  // ── L3 COMPOSITE ──
+  {id:'CS-301',level:'composite',desc:'Remove dust — full dust removal pass: scan → calibrate → extract → contact → brush → verify → document',robot:'KUKA KR10 R1100-2',tools:['brush','extraction'],sensors:['camera','force_torque'],iface:'EtherCAT / ROS2 / MES',inputs:{'component_id':'string','ROI':'surface_region','dust_threshold':'float','max_iterations':'int'},pre:['component_clamped (R-009)','brush_tool_active (R-006)','extraction_ready (R-007)','camera_calibrated (R-003)'],eff:['surface_dust_removed, quality_score>threshold'],succ:['quality_score>threshold, no_active_alarms, extraction_stopped'],fail:['force_overload','quality_FAIL after max iterations','extraction_not_confirmed','brush_stall>3s'],rec:['emergency_stop + alarm','flag_NOK + manual inspection','abort + check DO-03','stop + request_tool_check CS-305'],calls:['S-203','S-204','S-207','S-201','S-206','S-202','T-101','S-208','CS-304','CS-306'],ep:'/composite/remove_dust/execute',status:'ready'},
+  {id:'CS-302',level:'composite',desc:'Remove wax — aggressive wax removal pass with higher force profile and extraction',robot:'KUKA KR10 R1100-2',tools:['brush_hard','extraction'],sensors:['camera','force_torque'],iface:'EtherCAT / ROS2',inputs:{'component_id':'string','wax_zone_mask':'image_mask','F_normal_N':'higher than dust','solvent_flag':'bool'},pre:['component_clamped (R-009)','harder_brush_variant_mounted'],eff:['wax_removed, seal_area_clean'],succ:['wax_score<threshold, surface_dry'],fail:['tool_temp_insufficient','excessive_force','wax_not_removed'],rec:['increase_force','reduce_feed_rate','abort_to_safe_pose'],calls:['S-203','S-204','S-207','S-201','S-206','S-208','CS-304','CS-306'],ep:'/composite/remove_wax/execute',status:'ready'},
+  {id:'CS-303',level:'composite',desc:'Inspect surface — full scan, defect classification, quality scoring, result documentation',robot:'KUKA KR10 R1100-2',tools:[],sensors:['camera'],iface:'USB3 / ROS2',inputs:{'ROI':'surface_region','defect_classes':'list of classes to detect','quality_threshold':'float'},pre:['camera_calibrated (R-003)','robot_at_home'],eff:['defect_map, class_labels, PASS/FAIL, confidence computed'],succ:['full_scan_complete, result_written'],fail:['perception_uncertain','lighting_insufficient'],rec:['adjust_lighting','request_human_inspection'],calls:['S-205','S-203','S-208','CS-306'],ep:'/composite/inspect_surface/execute',status:'verified'},
+  {id:'CS-304',level:'composite',desc:'Repeat processing — loop controller for failed skills up to max iterations with escalation',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'internal',inputs:{'failed_skill_id':'string','iteration_count':'int','max_iterations':'int'},pre:['calling_skill_returned_FAIL'],eff:['retry_result, final PASS/FAIL'],succ:['calling skill PASS within max iterations'],fail:['max_iterations_reached'],rec:['write_NOK, halt, alert_operator'],calls:['CS-301','CS-302'],ep:'/composite/repeat_processing/execute',status:'ready'},
+  {id:'CS-305',level:'composite',desc:'Request tool change — move to station, release current, mount target, calibrate new tool',robot:'KUKA KR10 R1100-2',tools:['tool_changer'],sensors:[],iface:'Digital I/O / EtherCAT',inputs:{'required_tool_id':'string','current_tool_id':'string'},pre:['robot_at_or_near_change_station'],eff:['new_tool_mounted, TCP_updated'],succ:['DI_lock_confirmed, TCP_error<0.1mm'],fail:['lock_timeout','TCP_calib_diverged'],rec:['retry_lock','manual_inspection'],calls:['M-104','T-102','M-101','S-204'],ep:'/composite/request_tool_change/execute',status:'ready'},
+  {id:'CS-306',level:'composite',desc:'Document component condition — archive images, compute delta score, generate report, push to MES',robot:'KUKA KR10 R1100-2',tools:[],sensors:[],iface:'MES API / Image DB / PDF generator',inputs:{'component_id':'string','before_after_images':'image_pair','quality_score':'float','process_log':'log'},pre:[],eff:['DB_record_written, PDF_generated, MES_updated'],succ:['result written, PASS/NOK label set'],fail:['MES_connection_lost','DB_write_error'],rec:['retry_push','queue_locally'],calls:[],ep:'/composite/document_condition/execute',status:'ready'},
+  // ── L4 TASK PLANS ──
+  {id:'TP-401',level:'task',desc:'Task: Clean dirt — end-to-end dirt removal workflow with inspection, loop control, and reporting',robot:'KUKA KR10 R1100-2',tools:['brush','extraction'],sensors:['camera','force_torque'],iface:'MES / SCADA / HMI',inputs:{'component_id':'string','ROI':'surface_region','quality_threshold':'float','max_retries':'int'},pre:['component_fixtured==true (R-009)','all_tools_available','robot_referenced'],eff:['surface_clean, result_documented'],succ:['CLEANED flag, quality_score>threshold, report generated'],fail:['quality_FAIL after max_retries','tool_change_timeout','force_overload'],rec:['flag_NOK + escalate','request_tool_change CS-305','emergency_stop'],calls:['CS-303','CS-305','CS-301','CS-304','CS-306'],ep:'/tasks/clean_dirt/execute',status:'verified'},
+  {id:'TP-402',level:'task',desc:'Task: Clean screw areas — per-zone screw seat cleaning with pose correction, wax check, and aggregate reporting',robot:'KUKA KR10 R1100-2',tools:['brush','extraction'],sensors:['camera','force_torque'],iface:'MES / SCADA',inputs:{'component_id':'string','screw_zone_list':'Pose[]','brush_type':'string','force_profile':'float','quality_threshold':'float'},pre:['component_fixtured==true','screw_positions_known==true'],eff:['all_screw_areas_clean, torque_readable, report_generated'],succ:['all_screw_ROIs pass quality_check'],fail:['screw_not_located','quality_not_reached after retries'],rec:['relocate_screw','adjust_brush_parameters'],calls:['CS-303','CS-305','S-205','CS-301','CS-302','S-208','CS-304','CS-306'],ep:'/tasks/clean_screw_areas/execute',status:'draft'}
+];
+
+/* ── State ── */
+let skills=[],curF='all',curS='',editId=null,pendingDelId=null,dirHandle=null,loaded=false,skillMeta={};
+
+/* ── Shared cloud registry (Firestore glue lives in the module script at the bottom, exposed as window.FB) ── */
+/* Called by FB on every live snapshot: arr is the ordered skill list, meta maps id → {by, at} */
+function setSkills(arr,meta){
+  skills=arr;skillMeta=meta;loaded=true;
+  /* Migrate: back-fill section field from DEFAULT_SKILLS for any skill that's missing it */
+  const defMap={};DEFAULT_SKILLS.forEach(d=>{defMap[d.id]=d});
+  skills.forEach(s=>{if(!s.section&&defMap[s.id]&&defMap[s.id].section)s.section=defMap[s.id].section});
+  render();autoWriteFiles();
+}
+function showBanner(msg){const b=document.getElementById('unsavedBanner');b.textContent=msg;b.classList.toggle('show',!!msg)}
+function editedLine(id){
+  const m=skillMeta[id];if(!m||!m.by)return'';
+  const when=m.at?` · ${m.at.toLocaleString()}`:'';
+  return`<span style="margin-left:auto;align-self:center;font-size:11px;color:var(--muted)">Last edited by ${esc(m.by)}${when}</span>`;
+}
+/* Edits need a Google sign-in; prompts for one and returns false when signed out */
+function canEdit(){
+  if(!window.FB){showToast('t-err','⚠ Still connecting to the shared registry — try again in a moment.',4000);return false}
+  if(FB.user())return true;
+  showToast('t-warn','🔒 Sign in with Google to make changes.',3500);FB.signIn();return false;
+}
+function toggleAuth(){if(!window.FB)return;FB.user()?FB.signOut():FB.signIn()}
+function setAuthUI(user){
+  const btn=document.getElementById('authBtn'),tx=document.getElementById('authBtnText');
+  btn.classList.toggle('linked',!!user);
+  btn.firstChild.textContent=user?'👤 ':'🔒 ';
+  tx.textContent=user?`${user.email} · Sign out`:'Sign in with Google to edit';
+}
+function setSaveStatus(s){const el=document.getElementById('saveStatus'),tx=document.getElementById('saveStatusText');el.className='save-pill '+s;tx.textContent=s==='saved'?'All changes saved':s==='saving'?'Saving…':'Unsaved changes'}
+
+/* ── File System Access API ── */
+async function pickDirectory(){
+  if(!('showDirectoryPicker' in window)){showToast('t-warn','⚠ Use Chrome/Edge/Brave for folder auto-save.',5000);return}
+  try{
+    dirHandle=await window.showDirectoryPicker({mode:'readwrite'});
+    document.getElementById('dirStatus').classList.add('linked');
+    document.getElementById('dirStatusText').textContent=`📂 ${dirHandle.name}`;
+    showToast('t-saved',2500,`✓ Linked: ${dirHandle.name}`);
+    await autoWriteFiles();
+  }catch(e){if(e.name!=='AbortError')showToast('t-err',`Could not link: ${e.message}`,4000)}
+}
+async function autoWriteFiles(){
+  if(!dirHandle)return;
+  try{
+    const yf=await dirHandle.getFileHandle('skill_registry.yaml',{create:true});
+    const yw=await yf.createWritable();await yw.write(toYAML(skills));await yw.close();
+    const jf=await dirHandle.getFileHandle('skill_registry.json',{create:true});
+    const jw=await jf.createWritable();
+    await jw.write(JSON.stringify({skill_registry:{version:'3.0',exported_at:new Date().toISOString(),total_skills:skills.length,...makeGroups()}},null,2));
+    await jw.close();
+    showToast('t-filesaved',2000);
+  }catch(e){
+    if(e.name==='NotAllowedError'){dirHandle=null;document.getElementById('dirStatus').classList.remove('linked');document.getElementById('dirStatusText').textContent='Link folder for auto-save';showToast('t-warn','⚠ Folder permission revoked. Re-link.',4000)}
+  }
+}
+
+/* ── Toasts ── */
+const tT={};
+function showToast(id,msgOrDur,dur){
+  const el=document.getElementById(id);if(!el)return;
+  if(typeof msgOrDur==='string'){el.textContent=msgOrDur;dur=dur||3000}else{dur=msgOrDur||2500}
+  el.classList.add('show');clearTimeout(tT[id]);tT[id]=setTimeout(()=>el.classList.remove('show'),dur);
+}
+
+/* ── Render ── */
+function cardBody(s){
+  let h='';
+  const hasR=s.robot||(s.tools&&s.tools.length)||(s.sensors&&s.sensors.length);
+  if(hasR)h+=`<div class="pp"><div class="ppt">🔌 Resources</div><div class="tags">${s.robot?`<span class="tag tbl">${esc(s.robot)}</span>`:''} ${tg(s.tools,'ttl')} ${tg(s.sensors,'tpu')}</div></div>`;
+  if(s.inputs&&Object.keys(s.inputs).length)h+=`<div class="pp"><div class="ppt">📥 Parameters &amp; Inputs</div>${Object.entries(s.inputs).map(([k,v])=>`<div class="kv"><span class="kvk">${esc(k)}</span><span class="kvv">${esc(v)}</span></div>`).join('')}</div>`;
+  if(s.pre&&s.pre.length)h+=`<div class="pp"><div class="ppt">✅ Preconditions</div><div class="tags">${tg(s.pre,'tbl')}</div></div>`;
+  if(s.eff&&s.eff.length)h+=`<div class="pp"><div class="ppt">↗ Effects</div><div class="tags">${tg(s.eff,'tgr')}</div></div>`;
+  if(s.succ&&s.succ.length)h+=`<div class="pp"><div class="ppt">🎯 Success criteria</div><div class="tags">${tg(s.succ,'tgr')}</div></div>`;
+  if(s.fail&&s.fail.length)h+=`<div class="pp"><div class="ppt">⚠ Failure modes</div><div class="tags">${tg(s.fail,'trd')}</div></div>`;
+  if(s.rec&&s.rec.length)h+=`<div class="pp"><div class="ppt">🔁 Recovery</div><div class="tags">${tg(s.rec,'tam')}</div></div>`;
+  if(s.calls&&s.calls.length)h+=`<div class="pp full"><div class="ppt">🔗 Calls / sub-skills</div><div class="tags">${tg(s.calls,'tpu')}</div></div>`;
+  if(s.iface)h+=`<div class="pp"><div class="ppt">⇌ Interface</div><span class="tag">${esc(s.iface)}</span></div>`;
+  return h;
+}
+
+/* ── Section metadata ── */
+const SEC_META={
+  'Robot':        {ico:'🤖',color:'l0',sub:'Arm · axes · controller'},
+  'Gantry':       {ico:'⬜',color:'l0',sub:'Linear XYZ positioning'},
+  'Camera':       {ico:'📷',color:'l0',sub:'Vision & depth sensing'},
+  'F/T Sensor':   {ico:'⚖️', color:'l0',sub:'Force & torque measurement'},
+  'Gripper':      {ico:'✊',color:'l0',sub:'Grasping & manipulation'},
+  'Brush':        {ico:'🖌',color:'l0',sub:'Rotary cleaning tool'},
+  'Extraction':   {ico:'🌀',color:'l0',sub:'Vacuum & particle removal'},
+  'Tool Changer': {ico:'🔄',color:'l0',sub:'Multi-tool port switching'},
+  'Work Carrier': {ico:'📦',color:'l0',sub:'Component fixture & clamping'},
+  'Robot Motion': {ico:'🤖',color:'l1',sub:'PTP · LIN · Spline · Speed · Pose'},
+  'Tool & I/O':   {ico:'🔌',color:'l1',sub:'Tool start/stop · digital outputs'},
+};
+const SEC_ORDER_L0=['Robot','Gantry','Camera','F/T Sensor','Gripper','Brush','Extraction','Tool Changer','Work Carrier'];
+const SEC_ORDER_L1=['Robot Motion','Camera','F/T Sensor','Tool & I/O','Gantry'];
+
+function makeCard(s,idx){
+  const v=LV[s.level]||LV.resource;
+  const d=document.createElement('div');d.className='card';
+  d.innerHTML=`
+    <div class="ch" onclick="this.parentElement.classList.toggle('open')">
+      <div class="ci" style="background:var(--${v.lk}-bg);color:var(--${v.lk}-t);border-color:var(--${v.lk}-bdr)">${v.ico}</div>
+      <div class="cm"><div class="cid">${esc(s.id)}</div><div class="cdesc">${esc(s.desc)}</div></div>
+      <div class="cbadges">${lvb(s.level)}${stb(s.status)}</div>
+      <div class="chev">›</div>
+    </div>
+    <div class="cb">
+      <div class="pg">${cardBody(s)}</div>
+      ${s.ep?`<div class="ep">${esc(s.ep)}</div>`:''}
+      <div class="ca">
+        <button class="btn btn-sm" onclick="editSk(${idx})">✏ Edit</button>
+        <button class="btn btn-sm btn-d" onclick="requestDelete(${idx})">🗑 Delete</button>
+        ${editedLine(s.id)}
+      </div>
+    </div>`;
+  return d;
+}
+
+function renderSectioned(w,shown,secOrder){
+  const groups={};
+  secOrder.forEach(k=>groups[k]=[]);
+  const extra={};
+  shown.forEach(s=>{
+    const sec=s.section;
+    if(sec&&secOrder.includes(sec)){
+      groups[sec].push(s);
+    } else if(sec){
+      if(!extra[sec])extra[sec]=[];
+      extra[sec].push(s);
+    }
+    /* skills with no section at all are skipped — they belong to a different level */
+  });
+  /* Render known sections in order */
+  Object.entries(groups).forEach(([secName,list])=>{
+    if(!list.length)return;
+    const meta=SEC_META[secName]||{ico:'📁',color:'l0',sub:''};
+    const lk=meta.color;
+    const grpEl=document.createElement('div');grpEl.className='sec-group';
+    grpEl.innerHTML=`
+      <div class="sec-header">
+        <div class="sec-icon" style="background:var(--${lk}-bg);color:var(--${lk}-t);border-color:var(--${lk}-bdr)">${meta.ico}</div>
+        <div><div class="sec-title">${esc(secName)}</div>${meta.sub?`<div class="sec-sub">${meta.sub}</div>`:''}</div>
+        <span class="sec-count">${list.length} skill${list.length!==1?'s':''}</span>
+        <button class="sec-add" data-sec="${esc(secName)}" onclick="openAddInSection(this.dataset.sec)">＋ Add</button>
+      </div>
+      <div class="sec-cards"></div>`;
+    const cardsEl=grpEl.querySelector('.sec-cards');
+    list.forEach(s=>cardsEl.appendChild(makeCard(s,skills.indexOf(s))));
+    w.appendChild(grpEl);
+  });
+  /* Render custom/unknown sections at the end */
+  Object.entries(extra).forEach(([secName,list])=>{
+    const grpEl=document.createElement('div');grpEl.className='sec-group';
+    grpEl.innerHTML=`
+      <div class="sec-header">
+        <div class="sec-icon" style="background:var(--surf3);color:var(--muted);border-color:var(--bdr2)">📁</div>
+        <div><div class="sec-title">${esc(secName)}</div><div class="sec-sub">Custom section</div></div>
+        <span class="sec-count">${list.length} skill${list.length!==1?'s':''}</span>
+        <button class="sec-add" data-sec="${esc(secName)}" onclick="openAddInSection(this.dataset.sec)">＋ Add</button>
+      </div>
+      <div class="sec-cards"></div>`;
+    const cardsEl=grpEl.querySelector('.sec-cards');
+    list.forEach(s=>cardsEl.appendChild(makeCard(s,skills.indexOf(s))));
+    w.appendChild(grpEl);
+  });
+}
+
+function render(){
+  const w=document.getElementById('cw');w.innerHTML='';
+  const shown=skills.filter(s=>(curF==='all'||s.level===curF)&&(!curS||(s.id+' '+s.desc).toLowerCase().includes(curS)));
+  if(!shown.length){
+    const[ico,title,sub]=!loaded?['⏳','Loading shared registry…','Connecting to the cloud database']
+      :!skills.length?['📭','The registry is empty','Sign in, then Import a YAML / JSON export or use Reset to defaults']
+      :['🔍','No skills match','Try a different filter or search term'];
+    w.innerHTML=`<div style="text-align:center;padding:4rem 1rem;color:var(--muted)"><div style="font-size:40px;margin-bottom:1rem;opacity:.3">${ico}</div><div style="font-weight:700;font-size:16px">${title}</div><div style="font-size:13px;margin-top:6px">${sub}</div></div>`;
+    updateCounts();return;
+  }
+  if(curF==='resource'){
+    renderSectioned(w,shown,SEC_ORDER_L0);
+  } else if(curF==='elementary'){
+    renderSectioned(w,shown,SEC_ORDER_L1);
+  } else if(curF==='all'){
+    const l0=shown.filter(s=>s.level==='resource');
+    const l1=shown.filter(s=>s.level==='elementary');
+    const rest=shown.filter(s=>s.level!=='resource'&&s.level!=='elementary');
+    function lvlHdr(label,color){
+      const h=document.createElement('div');
+      h.style.cssText=`font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--${color}-t);padding:.25rem .2rem .75rem;display:flex;align-items:center;gap:8px`;
+      h.innerHTML=`<span style="display:inline-block;width:3px;height:14px;border-radius:2px;background:var(--${color});flex-shrink:0"></span>${label}`;
+      return h;
+    }
+    if(l0.length){w.appendChild(lvlHdr('Level 0 · Resources','l0'));renderSectioned(w,l0,SEC_ORDER_L0)}
+    if(l1.length){w.appendChild(lvlHdr('Level 1 · Elementary','l1'));renderSectioned(w,l1,SEC_ORDER_L1)}
+    if(rest.length){
+      w.appendChild(lvlHdr('Level 2–4 · Skills & Plans','muted'));
+      const fc=document.createElement('div');fc.className='cards';
+      rest.forEach(s=>fc.appendChild(makeCard(s,skills.indexOf(s))));
+      w.appendChild(fc);
+    }
+  } else {
+    const fc=document.createElement('div');fc.className='cards';
+    shown.forEach(s=>fc.appendChild(makeCard(s,skills.indexOf(s))));
+    w.appendChild(fc);
+  }
+  updateCounts();
+}
+
+function updateCounts(){
+  const c={resource:0,elementary:0,basic:0,composite:0,task:0};
+  skills.forEach(s=>{if(c[s.level]!==undefined)c[s.level]++});
+  const sg=document.getElementById('sg');sg.innerHTML='';
+  [['all','All skills',skills.length,'#64748b'],['resource','L0 Resources',c.resource,'#10b981'],['elementary','L1 Elementary',c.elementary,'#6366f1'],['basic','L2 Basic',c.basic,'#a855f7'],['composite','L3 Composite',c.composite,'#f59e0b'],['task','L4 Task plans',c.task,'#ef4444']].forEach(([k,l,n,dot])=>{
+    const el=document.createElement('div');el.className='sc'+(curF===k?' active':'');
+    el.innerHTML=`<div class="sn">${n}</div><div class="sl"><span class="sdot" style="background:${dot}"></span>${l}</div>`;
+    el.onclick=()=>{curF=k;document.querySelectorAll('.sc').forEach(x=>x.classList.remove('active'));el.classList.add('active');document.querySelectorAll('.toolbar .btn').forEach(b=>b.classList.remove('active'));const fb=document.getElementById('fb-'+k);if(fb)fb.classList.add('active');document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));const nb=document.getElementById('nav-'+k);if(nb)nb.classList.add('active');render()};
+    sg.appendChild(el);
+  });
+  ['all','resource','elementary','basic','composite','task'].forEach(k=>{
+    const el=document.getElementById('nc-'+k);if(el)el.textContent=k==='all'?skills.length:(c[k]||0);
+  });
+}
+
+function nf(f,btn){curF=f;document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.toolbar .btn').forEach(b=>b.classList.remove('active'));const fb=document.getElementById('fb-'+f);if(fb)fb.classList.add('active');render()}
+function tf(f,btn){curF=f;document.querySelectorAll('.toolbar .btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));const nb=document.getElementById('nav-'+f);if(nb)nb.classList.add('active');render()}
+function doSearch(v){curS=v.toLowerCase();render()}
+
+/* ── Section helpers ── */
+function updateSectionOptions(){
+  const lvl=document.getElementById('fLvl').value;
+  const row=document.getElementById('fSectionRow');
+  const sel=document.getElementById('fSection');
+  if(lvl==='resource'||lvl==='elementary'){
+    row.style.display='grid';
+    const opts=lvl==='resource'?SEC_ORDER_L0:SEC_ORDER_L1;
+    sel.innerHTML=opts.map(o=>`<option value="${o}">${o}</option>`).join('');
+  } else { row.style.display='none'; }
+}
+function openAddInSection(secName){
+  openAdd();
+  const isL0=SEC_ORDER_L0.includes(secName);
+  const isL1=SEC_ORDER_L1.includes(secName);
+  document.getElementById('fLvl').value=(isL0||(!isL1&&true))?'resource':'elementary';
+  if(isL1)document.getElementById('fLvl').value='elementary';
+  updateSectionOptions();
+  const sel=document.getElementById('fSection');
+  const opt=[...sel.options].find(o=>o.value===secName);
+  if(opt){
+    sel.value=secName;
+    document.getElementById('fSectionCustom').value='';
+  } else {
+    document.getElementById('fSectionCustom').value=secName;
+  }
+}
+/* ── Form ── */
+function clf(){['fId','fDesc','fRobot','fTools','fSensors','fIface','fCalls','fEp','fSectionCustom'].forEach(i=>{const el=document.getElementById(i);if(el)el.value=''});['fInputs','fPre','fEff','fSucc','fFail','fRec'].forEach(i=>document.getElementById(i).value='');document.getElementById('fLvl').value='composite';document.getElementById('fStat').value='ready';updateSectionOptions();}
+function fillF(s){
+  document.getElementById('fId').value=s.id||'';document.getElementById('fLvl').value=s.level||'composite';
+  updateSectionOptions();if(s.section){const sel=document.getElementById('fSection');const opt=[...sel.options].find(o=>o.value===s.section);if(opt)sel.value=s.section;else document.getElementById('fSectionCustom').value=s.section;}
+  document.getElementById('fDesc').value=s.desc||'';document.getElementById('fRobot').value=s.robot||'';
+  document.getElementById('fTools').value=(s.tools||[]).join(', ');document.getElementById('fSensors').value=(s.sensors||[]).join(', ');
+  document.getElementById('fIface').value=s.iface||'';
+  document.getElementById('fInputs').value=Object.entries(s.inputs||{}).map(([k,v])=>`${k}: ${v}`).join('\n');
+  document.getElementById('fPre').value=(s.pre||[]).join('\n');document.getElementById('fEff').value=(s.eff||[]).join('\n');
+  document.getElementById('fSucc').value=(s.succ||[]).join('\n');document.getElementById('fFail').value=(s.fail||[]).join('\n');
+  document.getElementById('fRec').value=(s.rec||[]).join('\n');
+  document.getElementById('fCalls').value=(s.calls||[]).join(', ');
+  document.getElementById('fEp').value=s.ep||'';document.getElementById('fStat').value=s.status||'ready';
+}
+function colF(){
+  const lines=id=>document.getElementById(id).value.split('\n').map(l=>l.trim()).filter(Boolean);
+  const csv=id=>document.getElementById(id).value.split(',').map(l=>l.trim()).filter(Boolean);
+  const inp={};lines('fInputs').forEach(l=>{const[k,...v]=l.split(':');if(k&&k.trim())inp[k.trim()]=v.join(':').trim()});
+  const _lvl=document.getElementById('fLvl').value;
+  const _customEl=document.getElementById('fSectionCustom');
+  const _selEl=document.getElementById('fSection');
+  const _secRaw=(_customEl&&_customEl.value.trim())||(_selEl&&_selEl.value.trim())||'';
+  const _sec=(_lvl==='resource'||_lvl==='elementary')&&_secRaw?_secRaw:undefined;
+  const _o={id:document.getElementById('fId').value.trim(),level:_lvl,desc:document.getElementById('fDesc').value.trim(),robot:document.getElementById('fRobot').value.trim(),tools:csv('fTools'),sensors:csv('fSensors'),iface:document.getElementById('fIface').value.trim(),inputs:inp,pre:lines('fPre'),eff:lines('fEff'),succ:lines('fSucc'),fail:lines('fFail'),rec:lines('fRec'),calls:csv('fCalls'),ep:document.getElementById('fEp').value.trim(),status:document.getElementById('fStat').value};
+  if(_sec)_o.section=_sec;return _o;
+}
+function openAdd(){if(!canEdit())return;editId=null;clf();document.getElementById('mt').textContent='Add skill';document.getElementById('mo').classList.add('show')}
+/* Edits track the skill by ID, not list position — live updates from other users can reorder the list while the modal is open */
+function editSk(i){if(!canEdit())return;editId=skills[i].id;fillF(skills[i]);document.getElementById('mt').textContent='Edit skill';document.getElementById('mo').classList.add('show')}
+function closeMod(){document.getElementById('mo').classList.remove('show');editId=null}
+function bgClose(e){if(e.target===document.getElementById('mo'))closeMod()}
+function saveSkill(){
+  if(!canEdit())return;
+  const s=colF();if(!s.id||!s.desc){alert('Skill ID and description are required.');return}
+  if(s.id!==editId&&skills.find(x=>x.id===s.id)){alert(`ID "${s.id}" already exists.`);return}
+  const oldId=editId;closeMod();FB.saveSkill(s,oldId);
+}
+
+/* ── Delete ── */
+function requestDelete(idx){
+  if(!canEdit())return;
+  const s=skills[idx];pendingDelId=s.id;
+  const deps=skills.filter(x=>x.id!==s.id&&(x.calls||[]).includes(s.id));
+  document.getElementById('delSkillId').textContent=s.id;
+  const dEl=document.getElementById('delDeps');
+  if(deps.length){dEl.classList.add('show');dEl.innerHTML=`⚠ <b>${deps.length} skill${deps.length>1?'s':''} reference this</b> in their calls:<br><br>`+deps.map(d=>`&nbsp;&nbsp;• ${esc(d.id)}`).join('<br>')}
+  else{dEl.classList.remove('show');dEl.innerHTML=''}
+  document.getElementById('delMo').classList.add('show');
+}
+function closeDelMo(){document.getElementById('delMo').classList.remove('show');pendingDelId=null}
+function confirmDelete(){if(!pendingDelId||!canEdit())return;const id=pendingDelId;closeDelMo();FB.deleteSkill(id)}
+/* ── Reset-to-defaults data (from skill_registry_rec.json) ── */
+const RESET_DEFAULTS_JSON={"skill_registry":{"version":"3.0","exported_at":"2026-06-05T08:08:10.230Z","total_skills":25,"L0_resources":[{"id":"R-001","level":"resource","section":"Robot","desc":"MAiRA L - robot arm, primary manipulation resource","robot":"MAiRA L","tools":["10mm Brush","Rotating Spinde"],"sensors":["3D Vision Sensor","Microphone","Speaker","Gripper"],"iface":"EtherCAT / Ethernet , GPIO, Modbus TCP","inputs":{"payload_kg":"9-11","reach_mm":"1600","DOF":"7","accuracy (mm)":">= 0.01 e^^3","IP_class":"IP65","mounting":"Any orientation","tool_flange":"ISO 9409-1-50-7-M6","tool_flange_I/O_power_supply":"24V 1.5A","footprint_base(mm)":"252","ip_address":""},"pre":["robot_operation==on","robot_status==idle","robot_enabled","controller_on"],"eff":["operation_modes==teach/semiautomatic/automatic"],"succ":["reach_home_position"],"fail":["joint_limit_reached","comm_loss"],"rec":["reinitialize","abort_to_safe_pose"],"calls":[],"ep":"/resources/robot/MAiRAL","status":"active"},{"id":"R-002","level":"resource","section":"Gantry","desc":"Gantry System - 1-axis linear Y positioning structure","robot":"Gantry_Y","tools":[],"sensors":[],"iface":"EtherCAT / Profinet","inputs":{"travel_Y_mm":"1500","max_speed_mms":"500","positioning_acc_mm":"0.05","drive":"Servo + linear encoder"},"pre":["homed==true","e_stop_clear"],"eff":["gantry_positioned"],"succ":["in_position_flag==1"],"fail":["limit_switch_hit","encoder_error"],"rec":["re_home","check_drive"],"calls":[],"ep":"/resources/gantry","status":"active"},{"id":"R-003","level":"resource","section":"Camera","desc":"3D vision camera - wrist / head-mounted","robot":"MAiRA L","tools":[],"sensors":[],"iface":"inbuilt_interface","inputs":{"camera_index":"0","RGB_res":"1920×1080 px","depth_res":"1280×720 px","frame_rate_rgb":"30 fps","frame_rate_depth":"30 fps","depth_range":"0.1–10 m","mount":"wrist-mounted, calibrated","pixelformat":"BGR8, MJPEG","frame_id":"camera_link, camera_depth_frame","obj_det_model":"neura_DLIS1, neura_DLIS2"},"pre":["camera_powered==true","calibration_valid"],"eff":["image_stream_available"],"succ":["frame_quality>threshold"],"fail":["camera_not_found","underexposed"],"rec":["reconnect","adjust_exposure"],"calls":[],"ep":"/resources/camera/3dvisioncam","status":"draft"},{"id":"R-004","level":"resource","section":"F/T Sensor","desc":"MAiRA L - 6-axis wrist F/T sensing","robot":"MAiRA L","tools":[],"sensors":[],"iface":"","inputs":{"force_range_Fx_N":"","force_range_Fy_N":"","force_range_Fz_N":"","torque_range_Fx_Nm":"","torque_range_Fy_Nm":"","torque_range_Fz_Nm":"","torque_range_Nm":"","sample_rate_Hz":"7000","force_limit_fx_fy_fz":"","torque_limit_fx_fy_fz":"","contact_threshold":""},"pre":["sensor_initialized==true"],"eff":["FT_data_available"],"succ":["within_nominal_range"],"fail":["sensor_overload","comm_loss"],"rec":["zero_sensor","reinitialize_driver"],"calls":[],"ep":"/resources/sensor/FT_sense","status":"draft"},{"id":"R-005","level":"resource","section":"Brush","desc":"Rotary Brush Tool - Rotating Spindle, 0–1500 RPM","robot":"MAiRA L","tools":[],"sensors":[],"iface":"PWM / Digital I/O","inputs":{"tool_id":"1","tool_length_offset":"200mm","bristle_material":"Nylon / horsehair","diameter_mm":"10","max_rpm":"1500","drive":"DC motor 24V 50W","speed_control":"PWM digital output","port":"tool_changer_B"},"pre":["tool_mounted_and_locked==true","extraction_ready"],"eff":["brush_running"],"succ":["RPM_in_range"],"fail":["motor_stall","overcurrent"],"rec":["reduce_force","check_bristles"],"calls":[],"ep":"/resources/tool/brush","status":"ready"}],"L1_elementary":[{"id":"M-101","level":"elementary","section":"Robot Motion","desc":"PTP move - joint-space point-to-point motion to target configuration","robot":"MAiRA L","tools":[],"sensors":[],"iface":"Ethernet / EtherCAT","inputs":{"target_joints":"float[6] — J1..J6","velocity_override_pct":"1–100","accel_override_pct":"1–100","joint_limits_threshold_A1_deg":"-180 to +180","joint_limits_threshold_A2_deg":"-120 to +120","joint_limits_threshold_A3_deg":"-180 to +180","joint_limits_threshold_A4_deg":"-150 to +150","joint_limits_threshold_A5_deg":"-180 to +180","joint_limits_threshold_A6_deg":"-145 to +145","joint_limits_threshold_A7_deg":"-180 to +180"},"pre":["no_collision_detected","limit_check_succeeded"],"eff":["robot at target_joints"],"succ":["joint_error < 0.01 rad"],"fail":["joint_limit","self_collision","timeout"],"rec":["replan","abort_to_safe_pose"],"calls":["R-001"],"ep":"/skills/motion/ptp_move/execute","status":"verified"},{"id":"M-102","level":"elementary","section":"Robot Motion","desc":"LIN/PTP move - linear Cartesian movement from current to target pose","robot":"MAiRA L","tools":[],"sensors":[],"iface":"EtherCAT / Ethernet, ModBus TCP, ROS2, NeuraPy SDK","inputs":{"target_pose":"Cartesian {X,Y,Z,A,B,C}","reference_frame":"","joint_speed":"","joint_acceleration":"","linear_speed":"","linear_acceleration":"","move_linear":"true","max_velocity_scaling_factor":"","max_acceleration_scaling_factor":"","planner_id":"","planning_time":"","num_planning_attempts":"","eef_step":"","jump_threshold":"","group_name":"","workspace_limit":"","port":""},"pre":["robot_status==idle","no_colision_detected","planning=true"],"eff":["robot at target_pose"],"succ":["position_error<0.5mm","orientation_error<0.1deg"],"fail":["IK_failure","collision","timeout"],"rec":["replan","abort_to_safe_pose"],"calls":["R-001"],"ep":"/skills/motion/lin_move/execute","status":"verified"}],"L2_basic_skills":[{"id":"S-201","level":"basic","desc":"Make contact — move robot to surface contact using force control, stop on threshold","robot":"MAiRA L","tools":[],"sensors":["force_torque"],"iface":"EtherCAT","inputs":{"approach_direction":"vector {x,y,z}","F_contact_threshold_N":"float","approach_speed_mms":"float"},"pre":["FT_sensor_initialized (R-004)","robot_at_pre_contact_pose"],"eff":["contact_made, F_normal >= threshold"],"succ":["F_normal in [F_min, F_max]"],"fail":["timeout_no_contact","force_overload"],"rec":["retract","re-approach"],"calls":["M-102","R-004"],"ep":"/skills/force/make_contact/execute","status":"ready"},{"id":"S-202","level":"basic","desc":"Maintain contact — active force control loop to keep normal force in band during motion","robot":"MAiRA L","tools":[],"sensors":["force_torque"],"iface":"EtherCAT","inputs":{"F_target_N":"float","F_band_N":"±float","control_rate_Hz":"int"},"pre":["contact_made (S-201)","FT_data_available (R-004)"],"eff":["force_maintained_in_band"],"succ":["F_error < band for full duration"],"fail":["force_out_of_band > 0.5s","FT_comm_loss"],"rec":["pause_motion","re_zero_FT"],"calls":["R-004"],"ep":"/skills/force/maintain_contact/execute","status":"ready"},{"id":"S-203","level":"basic","desc":"Activate brush — start spindle motor, ramp to target RPM, confirm via encoder feedback","robot":"MAiRA L","tools":["brush"],"sensors":[],"iface":"PWM / Digital I/O","inputs":{"target_rpm":"0–1500","ramp_time_s":"float"},"pre":["brush_tool_mounted (R-005)"],"eff":["brush_spinning_at_target_rpm"],"succ":["RPM_in_range"],"fail":["motor_stall","overcurrent"],"rec":["stop_motor","check_bristles"],"calls":["R-005"],"ep":"/skills/tool/activate_brush/execute","status":"ready"},{"id":"S-204","level":"basic","desc":"Move gantry — command Y-axis to target position and wait for in-position flag","robot":"Gantry_Y","tools":[],"sensors":[],"iface":"EtherCAT / Profinet","inputs":{"target_Y_mm":"float","speed_mms":"float"},"pre":["gantry_homed (R-002)","e_stop_clear"],"eff":["gantry_at_target_Y"],"succ":["in_position_flag==1, position_error<0.1mm"],"fail":["limit_switch_hit","encoder_error","timeout"],"rec":["re_home","check_drive"],"calls":["R-002"],"ep":"/skills/gantry/move_gantry/execute","status":"ready"},{"id":"S-205","level":"basic","desc":"Capture & detect — grab frame from 3D camera, run object/defect detection, return detections","robot":"MAiRA L","tools":[],"sensors":["camera"],"iface":"inbuilt_interface / ROS2","inputs":{"model_id":"neura_DLIS1 | neura_DLIS2","confidence_threshold":"float","ROI":"bounding_box"},"pre":["camera_powered (R-003)","calibration_valid"],"eff":["detections_available"],"succ":["frame_quality>threshold, detections_returned"],"fail":["camera_not_found","underexposed","model_load_fail"],"rec":["reconnect","adjust_exposure"],"calls":["R-003"],"ep":"/skills/perception/capture_detect/execute","status":"draft"}],"L3_composite":[{"id":"CS-301","level":"composite","desc":"Remove dust — full dust removal pass: scan → contact → brush → verify","robot":"MAiRA L","tools":["brush"],"sensors":["camera","force_torque"],"iface":"ROS2 / NeuraPy","inputs":{"component_id":"string","ROI":"surface_region","dust_threshold":"float","max_iterations":"int"},"pre":["brush_tool_active (R-005)","camera_calibrated (R-003)"],"eff":["surface_dust_removed, quality_score>threshold"],"succ":["quality_score>threshold, no_active_alarms,"],"fail":["force_overload","quality_FAIL after max iterations","brush_stall>3s"],"rec":["emergency_stop + alarm","flag_NOK + manual inspection","stop + request_tool_check CS-305"],"calls":["S-203","S-204","S-205","S-201","S-202","T-101","CS-304","CS-306"],"ep":"/composite/remove_dust/execute","status":"ready"},{"id":"CS-302","level":"composite","desc":"Remove wax","robot":"MAiRA L","tools":["brush_hard"],"sensors":["camera","force_torque"],"iface":"ROS2 / NeuraPy","inputs":{"component_id":"string","wax_zone_mask":"image_mask","F_normal_N":"higher than dust"},"pre":["component_clamped (R-009)","harder_brush_variant_mounted"],"eff":["wax_removed, seal_area_clean"],"succ":["wax_score<threshold, surface_dry"],"fail":["tool_temp_insufficient","excessive_force","wax_not_removed"],"rec":["increase_force","reduce_feed_rate","abort_to_safe_pose"],"calls":["S-201","S-203","S-204","S-205","CS-304","CS-306"],"ep":"/composite/remove_wax/execute","status":"ready"},{"id":"CS-303","level":"composite","desc":"Inspect surface - full scan, defect classification, quality scoring, result documentation","robot":"MAiRA L","tools":[],"sensors":["camera"],"iface":"USB3 / ROS2, NeuraPy","inputs":{"ROI":"surface_region","defect_classes":"list of classes to detect","quality_threshold":"float"},"pre":["camera_calibrated (R-003)","robot_at_home"],"eff":["defect_map, class_labels, PASS/FAIL, confidence computed"],"succ":["full_scan_complete, result_written"],"fail":["perception_uncertain","lighting_insufficient"],"rec":["adjust_lighting","request_human_inspection"],"calls":["S-205","S-203","CS-306"],"ep":"/composite/inspect_surface/execute","status":"verified"},{"id":"CS-304","level":"composite","desc":"Repeat processing - loop controller for failed skills up to max iterations with escalation","robot":"MAiRA L","tools":[],"sensors":[],"iface":"Ethernet/ ROS2, NeuraPy","inputs":{"failed_skill_id":"string","iteration_count":"int","max_iterations":"int"},"pre":["calling_skill_returned_FAIL"],"eff":["retry_result, final PASS/FAIL"],"succ":["calling skill PASS within max iterations"],"fail":["max_iterations_reached"],"rec":["write_NOK, halt, alert_operator"],"calls":["CS-301","CS-302"],"ep":"/composite/repeat_processing/execute","status":"ready"},{"id":"CS-305","level":"composite","desc":"Request tool change - move to station, release current, mount target, calibrate new tool","robot":"MAiRA L","tools":[],"sensors":[],"iface":"Digital I/O / EtherCAT","inputs":{"required_tool_id":"string","current_tool_id":"string"},"pre":["robot_at_or_near_change_station"],"eff":["new_tool_mounted, TCP_updated"],"succ":["DI_lock_confirmed, TCP_error<0.1mm"],"fail":["lock_timeout","TCP_calib_diverged"],"rec":["retry_lock","manual_inspection"],"calls":["M-101","S-204"],"ep":"/composite/request_tool_change/execute","status":"ready"}],"L4_task_plans":[{"id":"TP-401","level":"task","desc":"Task: Clean dirt - end-to-end dirt removal workflow with inspection, loop control, and reporting","robot":"MAiRA L","tools":["brush"],"sensors":["camera","force_torque"],"iface":"NeuraPy/ROS2, Ethernet","inputs":{"component_id":"string","ROI":"surface_region","quality_threshold":"float","max_retries":"int"},"pre":["all_tools_available","robot_referenced"],"eff":["surface_clean, result_documented"],"succ":["CLEANED flag, quality_score>threshold, report generated"],"fail":["quality_FAIL after max_retries","tool_change_timeout","force_overload"],"rec":["flag_NOK + escalate","request_tool_change CS-305","emergency_stop"],"calls":["CS-303","CS-305","CS-301","CS-304"],"ep":"/tasks/clean_dirt/execute","status":"verified"},{"id":"TP-402","level":"task","desc":"Task: Clean screw areas","robot":"MAiRA L","tools":["brush"],"sensors":["camera","force_torque"],"iface":"Ethernet , ROS2 / NeuraPy","inputs":{"component_id":"string","screw_zone_list":"Pose[]","brush_type":"string","force_profile":"float","quality_threshold":"float"},"pre":["component_fixtured==true","screw_positions_known==true"],"eff":["all_screw_areas_clean, torque_readable, report_generated"],"succ":["all_screw_ROIs pass quality_check"],"fail":["screw_not_located","quality_not_reached after retries"],"rec":["relocate_screw","adjust_brush_parameters"],"calls":["CS-303","CS-305","S-205","CS-301","CS-302","CS-304"],"ep":"/tasks/clean_screw_areas/execute","status":"ready"}]}};
+
+function getResetDefaults(){
+  /* Convert the JSON structure (with bucket keys) into the flat normalised array the app uses */
+  const reg=RESET_DEFAULTS_JSON.skill_registry;
+  const buckets=['L0_resources','L1_elementary','L2_basic_skills','L3_composite','L4_task_plans'];
+  const levelMap={L0_resources:'resource',L1_elementary:'elementary',L2_basic_skills:'basic',L3_composite:'composite',L4_task_plans:'task'};
+  let all=[];
+  buckets.forEach(b=>{if(Array.isArray(reg[b])){reg[b].forEach(s=>{const sc=Object.assign({},s);if(!sc.level)sc.level=levelMap[b];all.push(sc)})}});
+  return normaliseSkills(all);
+}
+
+function resetToDefaults(){if(!canEdit())return;if(!confirm('Reset the SHARED registry to default skills for everyone? All current skills will be lost.'))return;FB.replaceAll(getResetDefaults())}
+
+/* ── YAML / JSON export ── */
+function toYAML(arr){
+  function e(v){if(typeof v!=='string')return String(v);return/[:#\[\]{},\n\r"'&*?|<>=!%@`]/.test(v)||v===''?'"'+v.replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"':v}
+  const grp={resource:[],elementary:[],basic:[],composite:[],task:[]};
+  arr.forEach(s=>(grp[s.level]||grp.resource).push(s));
+  const lbls={resource:'L0_resources',elementary:'L1_elementary',basic:'L2_basic_skills',composite:'L3_composite',task:'L4_task_plans'};
+  let out=`skill_registry:\n  version: "3.0"\n  exported_at: "${new Date().toISOString()}"\n  total_skills: ${arr.length}\n\n`;
+  Object.entries(grp).forEach(([k,list])=>{
+    if(!list.length)return;out+=`  ${lbls[k]}:\n`;
+    list.forEach(s=>{
+      out+=`    - skill_id: ${e(s.id)}\n      level: ${s.level}\n      description: ${e(s.desc)}\n`;
+      out+=`      resources:\n        robot: ${e(s.robot||'')}\n`;
+      out+=`        tools:${s.tools&&s.tools.length?'\n'+s.tools.map(t=>`          - ${t}`).join('\n'):' []'}\n`;
+      out+=`        sensors:${s.sensors&&s.sensors.length?'\n'+s.sensors.map(t=>`          - ${t}`).join('\n'):' []'}\n`;
+      out+=`        interface: ${e(s.iface||'')}\n`;
+      if(s.inputs&&Object.keys(s.inputs).length){out+=`      parameters:\n`;Object.entries(s.inputs).forEach(([ik,iv])=>{out+=`        ${ik}: ${e(iv)}\n`})}else out+=`      parameters: {}\n`;
+      const lf=(lbl,a)=>{if(!a||!a.length){out+=`      ${lbl}: []\n`}else{out+=`      ${lbl}:\n`;a.forEach(i=>{out+=`        - ${e(i)}\n`})}};
+      lf('preconditions',s.pre);lf('effects',s.eff);lf('success_criteria',s.succ);lf('failure_modes',s.fail);lf('recovery',s.rec);lf('calls',s.calls);
+      out+=`      status: ${s.status||'ready'}\n      execution_endpoint: ${e(s.ep||'')}\n\n`;
+    });
+  });
+  return out;
+}
+function makeGroups(){
+  const grp={L0_resources:[],L1_elementary:[],L2_basic_skills:[],L3_composite:[],L4_task_plans:[]};
+  const map={resource:'L0_resources',elementary:'L1_elementary',basic:'L2_basic_skills',composite:'L3_composite',task:'L4_task_plans'};
+  skills.forEach(s=>(grp[map[s.level]]||grp.L0_resources).push(s));return grp;
+}
+function exp(fmt){
+  const grp=makeGroups();let content,fn,mime;
+  if(fmt==='json'){content=JSON.stringify({skill_registry:{version:'3.0',exported_at:new Date().toISOString(),total_skills:skills.length,...grp}},null,2);fn='skill_registry.json';mime='application/json'}
+  else{content=toYAML(skills);fn='skill_registry.yaml';mime='text/yaml'}
+  const b=new Blob([content],{type:mime});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=fn;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+  showToast('t-dl',2000);
+}
+
+/* ── Import ── */
+function triggerImport(){if(!canEdit())return;document.getElementById('importInput').value='';document.getElementById('importInput').click()}
+
+function handleImportFile(input){
+  const file=input.files[0];if(!file)return;
+  const isJson=file.name.endsWith('.json');
+  const isYaml=file.name.endsWith('.yaml')||file.name.endsWith('.yml');
+  if(!isJson&&!isYaml){showToast('t-err','⚠ Only .yaml / .yml / .json files are supported.',4000);return}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const text=e.target.result;
+      let imported=[];
+      if(isJson){imported=importFromJSON(text)}
+      else{imported=importFromYAML(text)}
+      if(!imported||!imported.length){showToast('t-err','⚠ No skills found in file.',4000);return}
+      if(!confirm(`Import ${imported.length} skill(s)? This will replace the SHARED registry for everyone.`))return;
+      FB.replaceAll(imported).then(ok=>{if(ok)showToast('t-imported',3000)});
+    }catch(err){showToast('t-err','⚠ Import failed: '+err.message,5000);console.error('Import error:',err)}
+  };
+  reader.readAsText(file);
+}
+
+function importFromJSON(text){
+  const data=JSON.parse(text);
+  // Support both flat array and our exported {skill_registry:{L0_resources:[...], ...}} shape
+  if(Array.isArray(data))return normaliseSkills(data);
+  const reg=data.skill_registry||data;
+  const buckets=['L0_resources','L1_elementary','L2_basic_skills','L3_composite','L4_task_plans'];
+  const levelMap={L0_resources:'resource',L1_elementary:'elementary',L2_basic_skills:'basic',L3_composite:'composite',L4_task_plans:'task'};
+  let all=[];
+  buckets.forEach(b=>{if(Array.isArray(reg[b])){reg[b].forEach(s=>{if(!s.level)s.level=levelMap[b];all.push(s)})}});
+  if(!all.length&&Array.isArray(reg.skills))all=reg.skills;
+  return normaliseSkills(all);
+}
+
+function importFromYAML(text){
+  // Lightweight parser for the specific YAML format we export
+  const lines=text.split('\n');
+  const skills=[];
+  let cur=null;
+  let inBlock=null; // which array/map field we're accumulating into
+  let inParams=false;
+
+  function flush(){if(cur){skills.push(cur);cur=null;inBlock=null;inParams=false}}
+
+  for(let i=0;i<lines.length;i++){
+    const raw=lines[i];
+    const stripped=raw.replace(/\r$/,'');
+    const trimmed=stripped.trim();
+    if(!trimmed||trimmed.startsWith('#'))continue;
+
+    // Count leading spaces
+    const indent=stripped.search(/\S/);
+
+    // New skill entry (4-space indent, starts with "- skill_id:")
+    if(indent===4&&trimmed.startsWith('- skill_id:')){
+      flush();
+      cur={id:yamlVal(trimmed.replace('- skill_id:','').trim()),tools:[],sensors:[],pre:[],eff:[],succ:[],fail:[],rec:[],calls:[],inputs:{}};
+      inBlock=null;inParams=false;
+      continue;
+    }
+    if(!cur)continue;
+
+    // 6-space indent: top-level skill fields
+    if(indent===6){
+      inBlock=null;inParams=false;
+      const colon=trimmed.indexOf(':');
+      if(colon<0)continue;
+      const key=trimmed.slice(0,colon).trim();
+      const val=trimmed.slice(colon+1).trim();
+      if(key==='level'){cur.level=yamlVal(val)}
+      else if(key==='description'){cur.desc=yamlVal(val)}
+      else if(key==='status'){cur.status=yamlVal(val)}
+      else if(key==='execution_endpoint'){cur.ep=yamlVal(val)}
+      else if(key==='resources'){/* block, children follow */}
+      else if(key==='parameters'){inParams=true;if(val==='{}')inParams=false}
+      else if(['preconditions','effects','success_criteria','failure_modes','recovery','calls'].includes(key)){
+        inBlock=key;if(val==='[]')inBlock=null;
+      }
+      continue;
+    }
+
+    // 8-space: inside resources block
+    if(indent===8&&!inParams){
+      const colon=trimmed.indexOf(':');if(colon<0)continue;
+      const key=trimmed.slice(0,colon).trim();
+      const val=trimmed.slice(colon+1).trim();
+      if(key==='robot'){cur.robot=yamlVal(val);inBlock=null}
+      else if(key==='interface'){cur.iface=yamlVal(val);inBlock=null}
+      else if(key==='tools'){inBlock='tools';if(val==='[]')inBlock=null}
+      else if(key==='sensors'){inBlock='sensors';if(val==='[]')inBlock=null}
+      else if(inBlock===null){/* ignore */}
+      continue;
+    }
+
+    // 8-space inside parameters block
+    if(indent===8&&inParams){
+      const colon=trimmed.indexOf(':');if(colon<0)continue;
+      const key=trimmed.slice(0,colon).trim();
+      const val=trimmed.slice(colon+1).trim();
+      cur.inputs[key]=yamlVal(val);
+      continue;
+    }
+
+    // List items at 10-space (inside tools/sensors/preconditions/etc.)
+    if(indent===10&&trimmed.startsWith('- ')){
+      const val=yamlVal(trimmed.slice(2).trim());
+      const blockMap={tools:'tools',sensors:'sensors',preconditions:'pre',effects:'eff',success_criteria:'succ',failure_modes:'fail',recovery:'rec',calls:'calls'};
+      if(inBlock&&blockMap[inBlock]){cur[blockMap[inBlock]].push(val)}
+      continue;
+    }
+  }
+  flush();
+  return normaliseSkills(skills);
+}
+
+function yamlVal(s){
+  if(!s)return'';
+  // Strip surrounding quotes
+  if((s.startsWith('"')&&s.endsWith('"'))||(s.startsWith("'")&&s.endsWith("'")))
+    return s.slice(1,-1).replace(/\\"/g,'"').replace(/\\\\/g,'\\');
+  return s;
+}
+
+function normaliseSkills(arr){
+  // Map exported field names back to internal names used by the app
+  return arr.map(s=>({
+    id:       s.id||s.skill_id||'',
+    level:    s.level||'composite',
+    section:  s.section||undefined,
+    desc:     s.desc||s.description||'',
+    robot:    s.robot||(s.resources&&s.resources.robot)||'',
+    tools:    s.tools||(s.resources&&s.resources.tools)||[],
+    sensors:  s.sensors||(s.resources&&s.resources.sensors)||[],
+    iface:    s.iface||(s.resources&&s.resources.interface)||'',
+    inputs:   s.inputs||s.parameters||{},
+    pre:      s.pre||s.preconditions||[],
+    eff:      s.eff||s.effects||[],
+    succ:     s.succ||s.success_criteria||[],
+    fail:     s.fail||s.failure_modes||[],
+    rec:      s.rec||s.recovery||[],
+    calls:    s.calls||[],
+    ep:       s.ep||s.execution_endpoint||'',
+    status:   s.status||'ready',
+  })).filter(s=>s.id);
+}
+
+/* ── Boot ── */
+render();
+setTimeout(()=>{if(!loaded)showBanner('⚠ Cannot reach the shared registry — check your internet connection, or whether a browser extension is blocking Google/Firebase.')},15000);
+</script>
+
+<!-- ── Firestore + Google sign-in ── -->
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import {initializeFirestore,collection,doc,onSnapshot,getDocs,deleteDoc,writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* Public web config — safe to ship in the page; who may read/write is enforced by firestore.rules */
+const firebaseConfig={
+  apiKey:'AIzaSyCcxg5KxbKCkaoteAA6-ktDpk299qQ4yzA',
+  authDomain:'skill-registry-c64d3.firebaseapp.com',
+  projectId:'skill-registry-c64d3',
+  storageBucket:'skill-registry-c64d3.firebasestorage.app',
+  messagingSenderId:'894163166985',
+  appId:'1:894163166985:web:9394b856a222ff88d755d8'
+};
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=initializeFirestore(app,{ignoreUndefinedProperties:true});
+const col=collection(db,'skills');
+/* One document per skill, keyed by its ID (encoded, since Firestore IDs can't contain "/") */
+const ref=id=>doc(col,encodeURIComponent(id));
+let orders={};/* id → display order, from the latest snapshot */
+
+const plain=s=>JSON.parse(JSON.stringify(s));
+const stamp=()=>({updatedBy:auth.currentUser.email,updatedAt:serverTimestamp()});
+
+/* Runs a write, keeps the save pill in sync and reports failures; resolves true on success */
+async function write(fn){
+  setSaveStatus('saving');
+  try{await fn();setSaveStatus('saved');showToast('t-saved',2000);return true}
+  catch(e){
+    setSaveStatus('unsaved');
+    showToast('t-err',e.code==='permission-denied'?'⚠ Not allowed — your account cannot edit this registry.':`⚠ Save failed: ${e.message}`,5000);
+    return false;
+  }
+}
+
+function saveSkill(s,oldId){
+  const order=oldId!=null&&oldId in orders?orders[oldId]:Math.max(-1,...Object.values(orders))+1;
+  return write(async()=>{
+    const b=writeBatch(db);
+    if(oldId!=null&&oldId!==s.id)b.delete(ref(oldId));/* ID was renamed */
+    b.set(ref(s.id),{...plain(s),order,...stamp()});
+    await b.commit();
+  });
+}
+function deleteSkill(id){return write(()=>deleteDoc(ref(id)))}
+/* Replaces the whole registry (import / reset) — batches are capped at 500 ops, so chunk */
+function replaceAll(arr){
+  return write(async()=>{
+    const keep=new Set(arr.map(s=>encodeURIComponent(s.id)));
+    const ops=[];
+    (await getDocs(col)).forEach(d=>{if(!keep.has(d.id))ops.push(b=>b.delete(d.ref))});
+    arr.forEach((s,i)=>ops.push(b=>b.set(ref(s.id),{...plain(s),order:i,...stamp()})));
+    for(let i=0;i<ops.length;i+=400){const b=writeBatch(db);ops.slice(i,i+400).forEach(op=>op(b));await b.commit()}
+  });
+}
+
+/* Toast other people's changes as they arrive */
+function announce(changes){
+  const me=auth.currentUser&&auth.currentUser.email;
+  const others=changes.filter(c=>c.type==='removed'||c.doc.data().updatedBy!==me);
+  if(!others.length)return;
+  if(editId&&others.some(c=>c.doc.data().id===editId))
+    showToast('t-warn',`⚠ Someone else just changed ${editId} — saving will overwrite their edit.`,6000);
+  const verb={added:'added',modified:'updated',removed:'deleted'};
+  const c0=others[0],d0=c0.doc.data(),who=d0.updatedBy||'someone';
+  showToast('t-live',others.length===1?`↻ ${d0.id} ${verb[c0.type]}${c0.type==='removed'?'':` by ${who}`}`:`↻ ${others.length} skills changed by ${who}`,4000);
+}
+
+let first=true;
+onSnapshot(col,snap=>{
+  const rows=snap.docs.map(d=>d.data({serverTimestamps:'estimate'}))
+    .sort((a,b)=>(a.order??0)-(b.order??0)||String(a.id).localeCompare(String(b.id)));
+  orders={};const meta={};
+  const list=rows.map(({order,updatedBy,updatedAt,...s})=>{
+    orders[s.id]=order;meta[s.id]={by:updatedBy,at:updatedAt?updatedAt.toDate():null};return s;
+  });
+  if(!first&&!snap.metadata.hasPendingWrites)announce(snap.docChanges());
+  first=false;showBanner('');setSkills(list,meta);
+},err=>showBanner(`⚠ Cannot reach the shared registry: ${err.message}`));
+
+const provider=new GoogleAuthProvider();
+onAuthStateChanged(auth,setAuthUI);
+
+window.FB={
+  user:()=>auth.currentUser,
+  signIn:()=>signInWithPopup(auth,provider).catch(e=>{
+    if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')showToast('t-err',`⚠ Sign-in failed: ${e.message}`,5000);
+  }),
+  signOut:()=>signOut(auth),
+  saveSkill,deleteSkill,replaceAll
+};
+</script>
+</body>
+</html>
