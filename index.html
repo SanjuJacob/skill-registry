@@ -255,6 +255,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
     <div class="sb-label">Storage</div>
     <div class="save-pill saved" id="saveStatus"><span class="save-dot"></span><span id="saveStatusText">All changes saved</span></div>
     <div class="dir-btn" id="authBtn" onclick="toggleAuth()" title="Sign in with Google to add, edit or delete skills">🔒 <span id="authBtnText">Sign in with Google to edit</span></div>
+    <div class="dir-btn" id="roleBtn" onclick="roleAction()" style="display:none"><span id="roleBtnText"></span></div>
     <div class="dir-btn" id="dirStatus" onclick="pickDirectory()" title="Link a folder — files auto-write on every change">📁 <span id="dirStatusText">Link folder for auto-save</span></div>
   </div>
   <div class="sb-section">
@@ -409,6 +410,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,s
 </div>
 </div>
 
+<!-- MANAGE ACCESS MODAL (admin only) -->
+<div class="mo" id="accMo" onclick="if(event.target===this)closeAccess()">
+<div class="md">
+  <h3><span>Manage edit access</span><button class="btn btn-g btn-sm" onclick="closeAccess()" style="font-size:15px;padding:4px 9px">✕</button></h3>
+  <div class="sdiv">Access requests</div>
+  <div id="accReqs"></div>
+  <div class="sdiv">Editors</div>
+  <div id="accEds"></div>
+  <div class="sdiv">Add an editor directly</div>
+  <div style="display:flex;gap:8px"><input class="fi" id="accAdd" placeholder="name@gmail.com" style="margin:0" onkeydown="if(event.key==='Enter')addEditor()"><button class="btn btn-p" onclick="addEditor()">＋ Add</button></div>
+  <div class="fhint">Everyone can view the registry. Only you and the editors listed here can change it.</div>
+</div>
+</div>
+
 <script>
 /* ── Theme ──────────────────────────────── */
 const THEME_KEY='srTheme';
@@ -488,11 +503,16 @@ function editedLine(id){
   const when=m.at?` · ${m.at.toLocaleString()}`:'';
   return`<span style="margin-left:auto;align-self:center;font-size:11px;color:var(--muted)">Last edited by ${esc(m.by)}${when}</span>`;
 }
-/* Edits need a Google sign-in; prompts for one and returns false when signed out */
+/* Edits need a Google sign-in plus admin approval; explains what's missing and returns false otherwise */
 function canEdit(){
   if(!window.FB){showToast('t-err','⚠ Still connecting to the shared registry — try again in a moment.',4000);return false}
-  if(FB.user())return true;
-  showToast('t-warn','🔒 Sign in with Google to make changes.',3500);FB.signIn();return false;
+  if(!FB.user()){showToast('t-warn','🔒 Sign in with Google to make changes.',3500);FB.signIn();return false}
+  const r=FB.role();
+  if(r==='admin'||r==='editor')return true;
+  showToast('t-warn',r==='pending'?'⏳ Your edit access request is waiting for approval.'
+    :r==='viewer'?'🔒 You need edit access — click "Request edit access" in the sidebar.'
+    :'Checking your access — try again in a moment.',4500);
+  return false;
 }
 function toggleAuth(){if(!window.FB)return;FB.user()?FB.signOut():FB.signIn()}
 function setAuthUI(user){
@@ -500,6 +520,54 @@ function setAuthUI(user){
   btn.classList.toggle('linked',!!user);
   btn.firstChild.textContent=user?'👤 ':'🔒 ';
   tx.textContent=user?`${user.email} · Sign out`:'Sign in with Google to edit';
+}
+
+/* ── Edit access: roles and the admin's Manage access panel ── */
+let accState={requests:[],editors:[]};
+const ROLE_UI={
+  checking:['… Checking edit access',false],
+  viewer:['✋ Request edit access',false],
+  pending:['⏳ Access requested — awaiting approval',false],
+  editor:['✏ You have edit access',true],
+};
+function setRoleUI(role){
+  const btn=document.getElementById('roleBtn'),tx=document.getElementById('roleBtnText');
+  btn.style.display=role?'flex':'none';if(!role)return;
+  const n=accState.requests.length;
+  const[label,ok]=role==='admin'?[`👥 Manage access${n?` · ${n} request${n>1?'s':''}`:''}`,true]:ROLE_UI[role];
+  tx.textContent=label;btn.classList.toggle('linked',ok);
+  btn.style.cursor=role==='viewer'||role==='admin'?'pointer':'default';
+}
+function roleAction(){
+  const r=FB.role();
+  if(r==='viewer')FB.requestAccess();
+  else if(r==='admin')openAccess();
+}
+function openAccess(){renderAccess();document.getElementById('accMo').classList.add('show')}
+function closeAccess(){document.getElementById('accMo').classList.remove('show')}
+/* Called by FB with whichever list changed */
+function setAccessLists(part){Object.assign(accState,part);renderAccess();if(window.FB)setRoleUI(FB.role())}
+function accRow(label,sub,btns){
+  return`<div style="display:flex;align-items:center;gap:8px;padding:.55rem 0;border-bottom:1px solid var(--bdr)"><div style="flex:1;min-width:0"><div style="font-weight:600;overflow-wrap:anywhere">${label}</div><div style="font-size:12px;color:var(--muted)">${sub}</div></div>${btns}</div>`;
+}
+function renderAccess(){
+  const when=t=>t&&t.toDate?t.toDate().toLocaleString():'';
+  const none=msg=>`<div style="font-size:13px;color:var(--muted);padding:.4rem 0">${msg}</div>`;
+  document.getElementById('accReqs').innerHTML=accState.requests.length
+    ?accState.requests.map(r=>accRow(esc(r.email),`${esc(r.name||'')}${r.name?' · ':''}requested ${esc(when(r.requestedAt))}`,
+      `<button class="btn btn-sm btn-p" data-email="${esc(r.email)}" onclick="FB.approve(this.dataset.email)">✓ Approve</button><button class="btn btn-sm btn-d" data-email="${esc(r.email)}" onclick="FB.deny(this.dataset.email)">✗ Deny</button>`)).join('')
+    :none('No pending requests.');
+  const admin=window.FB?FB.adminEmail:'';
+  document.getElementById('accEds').innerHTML=accRow(esc(admin),'Admin (you)','')+
+    (accState.editors.length
+      ?accState.editors.map(e=>accRow(esc(e.email),`${esc(e.name||'')}${e.name?' · ':''}added ${esc(when(e.addedAt))}`,
+        `<button class="btn btn-sm btn-d" data-email="${esc(e.email)}" onclick="if(confirm('Remove edit access for '+this.dataset.email+'?'))FB.removeEditor(this.dataset.email)">Remove</button>`)).join('')
+      :none('No other editors yet.'));
+}
+function addEditor(){
+  const el=document.getElementById('accAdd'),email=el.value.trim().toLowerCase();
+  if(!/^[^\s@/]+@[^\s@/]+\.[^\s@/]+$/.test(email)){showToast('t-warn','⚠ Enter a valid email address.',3000);return}
+  FB.approve(email).then(ok=>{if(ok)el.value=''});
 }
 function setSaveStatus(s){const el=document.getElementById('saveStatus'),tx=document.getElementById('saveStatusText');el.className='save-pill '+s;tx.textContent=s==='saved'?'All changes saved':s==='saving'?'Saving…':'Unsaved changes'}
 
@@ -989,7 +1057,10 @@ setTimeout(()=>{if(!loaded)showBanner('⚠ Cannot reach the shared registry — 
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import {initializeFirestore,collection,doc,onSnapshot,getDocs,deleteDoc,writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {initializeFirestore,collection,doc,onSnapshot,getDocs,setDoc,deleteDoc,writeBatch,serverTimestamp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+/* Must match isAdmin() in firestore.rules — the rules are what actually enforce it */
+const ADMIN_EMAIL='sanjujacob03@gmail.com';
 
 /* Public web config — safe to ship in the page; who may read/write is enforced by firestore.rules */
 const firebaseConfig={
@@ -1013,9 +1084,9 @@ const plain=s=>JSON.parse(JSON.stringify(s));
 const stamp=()=>({updatedBy:auth.currentUser.email,updatedAt:serverTimestamp()});
 
 /* Runs a write, keeps the save pill in sync and reports failures; resolves true on success */
-async function write(fn){
+async function write(fn,okMsg='✓ Saved'){
   setSaveStatus('saving');
-  try{await fn();setSaveStatus('saved');showToast('t-saved',2000);return true}
+  try{await fn();setSaveStatus('saved');showToast('t-saved',okMsg,2000);return true}
   catch(e){
     setSaveStatus('unsaved');
     showToast('t-err',e.code==='permission-denied'?'⚠ Not allowed — your account cannot edit this registry.':`⚠ Save failed: ${e.message}`,5000);
@@ -1068,16 +1139,63 @@ onSnapshot(col,snap=>{
   first=false;showBanner('');setSkills(list,meta);
 },err=>showBanner(`⚠ Cannot reach the shared registry: ${err.message}`));
 
+/* ── Edit access: one doc per approved editor in "editors", one per pending request in "requests", both keyed by email ── */
+let role=null,unsubs=[];
+function watchRole(user){
+  unsubs.forEach(u=>u());unsubs=[];accState={requests:[],editors:[]};
+  if(!user){role=null;setRoleUI(null);return}
+  if(user.email===ADMIN_EMAIL){role='admin';setRoleUI(role);watchAdmin();return}
+  role='checking';setRoleUI(role);
+  /* Live, so approval takes effect without a reload */
+  let isEditor=null,hasRequest=null;
+  const update=()=>{if(isEditor===null||hasRequest===null)return;role=isEditor?'editor':hasRequest?'pending':'viewer';setRoleUI(role)};
+  unsubs.push(onSnapshot(doc(db,'editors',user.email),d=>{
+    const was=role;isEditor=d.exists();update();
+    if(was==='pending'&&role==='editor')showToast('t-live','✓ Your edit access was approved — you can now make changes.',5000);
+  },()=>{isEditor=false;update()}));
+  unsubs.push(onSnapshot(doc(db,'requests',user.email),d=>{hasRequest=d.exists();update()},()=>{hasRequest=false;update()}));
+}
+function watchAdmin(){
+  let first=true;
+  unsubs.push(onSnapshot(collection(db,'requests'),snap=>{
+    if(!first)snap.docChanges().filter(c=>c.type==='added').forEach(c=>showToast('t-live',`✋ ${c.doc.data().email} requested edit access`,6000));
+    first=false;
+    setAccessLists({requests:snap.docs.map(d=>d.data({serverTimestamps:'estimate'}))});
+  },err=>showToast('t-err',`⚠ Cannot load access requests: ${err.message}`,5000)));
+  unsubs.push(onSnapshot(collection(db,'editors'),snap=>{
+    setAccessLists({editors:snap.docs.map(d=>d.data({serverTimestamps:'estimate'})).sort((a,b)=>a.email.localeCompare(b.email))});
+  },err=>showToast('t-err',`⚠ Cannot load editors: ${err.message}`,5000)));
+}
+function requestAccess(){
+  const u=auth.currentUser;
+  return write(()=>setDoc(doc(db,'requests',u.email),{email:u.email,name:u.displayName||'',requestedAt:serverTimestamp()}),'✓ Request sent — you can edit once it is approved');
+}
+/* Approving moves the request into "editors"; also used to add someone directly by email */
+function approve(email){
+  const req=accState.requests.find(r=>r.email===email);
+  return write(async()=>{
+    const b=writeBatch(db);
+    b.set(doc(db,'editors',email),{email,name:(req&&req.name)||'',addedAt:serverTimestamp(),addedBy:auth.currentUser.email});
+    b.delete(doc(db,'requests',email));
+    await b.commit();
+  },`✓ ${email} can now edit`);
+}
+const deny=email=>write(()=>deleteDoc(doc(db,'requests',email)),'✓ Request denied');
+const removeEditor=email=>write(()=>deleteDoc(doc(db,'editors',email)),`✓ Removed ${email}`);
+
 const provider=new GoogleAuthProvider();
-onAuthStateChanged(auth,setAuthUI);
+onAuthStateChanged(auth,u=>{setAuthUI(u);watchRole(u)});
 
 window.FB={
   user:()=>auth.currentUser,
+  role:()=>role,
+  adminEmail:ADMIN_EMAIL,
   signIn:()=>signInWithPopup(auth,provider).catch(e=>{
     if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')showToast('t-err',`⚠ Sign-in failed: ${e.message}`,5000);
   }),
   signOut:()=>signOut(auth),
-  saveSkill,deleteSkill,replaceAll
+  saveSkill,deleteSkill,replaceAll,
+  requestAccess,approve,deny,removeEditor
 };
 </script>
 </body>
